@@ -1,0 +1,99 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f8f9fa;
+}
+
+.container {
+    margin: 20px auto;
+    max-width: 800px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+
+
+.table th, .table td {
+    text-align: center;
+}
+
+footer {
+    background-color: #5e8b8b;
+    color: #ffffff;
+    text-align: center;
+    padding: 15px 0;
+    margin-top: 50px;
+}
+
+
+
+
+
+/* Estilo para o cabeçalho */
+.navbar {
+    background-color: #6d9792;
+    background-image: url('/images/background.png'); /* Caminho da textura */
+    background-size: auto;
+    background-repeat: repeat;
+    background-position: top left;
+    color: #ffffff;
+    margin-bottom: 20px;
+
+}
+
+.navbar-brand img {
+    max-height: 50px;
+    margin-right: 15px;
+}
+
+.navbar-nav .nav-link {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    color: #ffffff !important;
+}
+
+.navbar-nav .nav-link:hover {
+    color: #d1e0e0 !important;
+}
+
+/* Fontes personalizadas */
+body {
+    font-family: 'Roboto', sans-serif;
+}
+
+h1 {
+    font-family: 'Playfair Display', serif;
+    color: #3a3a3a;
+    margin-top: 30px;
+}
+
+table th {
+    background-color: #7ca9a7;
+    color: #fff;
+    font-weight: 400;
+}
+
+table td {
+    font-family: 'Roboto', sans-serif;
+}
+
+/* Botão personalizado */
+.btn-custom {
+    background-color: #7ca9a7;
+    color: #fff;
+    font-weight: 500;
+    border-radius: 20px;
+}
+
+.btn-custom:hover {
+    background-color: #5e8b8b;
+}
+

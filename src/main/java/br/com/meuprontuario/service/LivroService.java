@@ -1,37 +1,34 @@
 package br.com.meuprontuario.service;
 
-import br.com.meuprontuario.entity.Livro;
-import br.com.meuprontuario.repository.LivroRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import br.com.meuprontuario.dao.LivroDAO;
+import br.com.meuprontuario.model.Livro;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Service
 public class LivroService {
 
-    @Autowired
-    private LivroRepository livroRepository;
+    private LivroDAO livroDAO = new LivroDAO();
 
     public void salvar(Livro livro) {
-        this.livroRepository.save(livro);
+        if (livro.getNome() == null || livro.getNome().isEmpty()) {
+            throw new IllegalArgumentException("O nome do livro não pode ser vazio.");
+        }
+        if (livro.getAutor() == null || livro.getAutor().getId() == null) {
+            throw new IllegalArgumentException("É necessário selecionar um autor.");
+        }
+        livroDAO.salvar(livro);
     }
 
-    public List<Livro> encontrarTodos() {
-        return this.livroRepository.findAll();
+    public List<Livro> listarTodos() {
+        return livroDAO.listarTodos();
     }
 
-    public Page<Livro> encontrarPaginado(int pagina, int tamanho) {
-        return this.livroRepository.findAll(PageRequest.of(pagina, tamanho));
+    public Livro buscarPorId(Long id) {
+        return livroDAO.buscarPorId(id);
     }
 
-    public Livro encontrarPorId(Long id) {
-        return this.livroRepository.findById(id).orElse(null);
-    }
-
-    public void delete(Long id) {
-        this.livroRepository.deleteById(id);
+    public void excluir(Long id) {
+        livroDAO.excluir(id);
     }
 }

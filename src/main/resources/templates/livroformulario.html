@@ -1,48 +1,41 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <title>Formulário de Cadastro de Livro</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <title>Formulário de Livros</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+
+
 </head>
 
 <body>
-    <div class="container mt-5">
-        <h1>Formulário de Cadastro de Livro</h1>
-        <div th:if="${mensagem}" class="alert alert-warning" role="alert">
-            <p th:text="${mensagem}"></p>
-        </div>
+    <!-- Inclui o cabeçalho -->
+    <div th:replace="fragments/cabecalho :: cabecalho"></div>
 
+    <!-- Conteúdo principal -->
+    <div class="container">
+        <h1>Formulário de Cadastro de Livros</h1>
+            <form th:action="@{/livros/salvar}" method="post">
 
-        <form action="/livro/form/salvar" method="POST">
-            <div th:if="${livro}">
-                <div class="mb-3">
-                    <label for="id" class="form-label">ID</label>
-                    <input type="text" readonly class="form-control" id="id" name="id" th:value="${livro?.id}" />
-                </div>
+            <div class="form-group">
+                <label for="titulo">Título</label>
+                <input type="text" id="nome" name="nome" class="form-control" th:value="${livro?.nome}" required>
+
             </div>
-
-            <div class="mb-3">
-                <label for="nome" class="form-label">Nome do Livro</label>
-                <input type="text" class="form-control" id="nome" name="nome" th:value="${livro?.nome}" required />
-            </div>
-
-            <div class="mb-3">
-                <label for="autor" class="form-label">Autor</label>
-                <select id="autor" name="autor" class="form-select" required>
-                    <option value="">Selecione um Autor</option>
-                    <option th:each="autor : ${listaAutores}" th:value="${autor.id}" th:text="${autor.nome}"
-                        th:selected="${autor.id} == ${livro?.autor?.id}">
-                    </option>
+            <div class="form-group">
+                <label for="autor">Autor</label>
+                <select id="autor" name="autor.id" class="form-control" required>
+                    <option value="" disabled selected>Selecione um autor</option>
+                    <option th:each="autor : ${autores}" th:value="${autor.id}" th:text="${autor.nome}"></option>
                 </select>
             </div>
-
-            <button type="submit" class="btn btn-success">Salvar</button>
-            <a th:href="@{/}" class="btn btn-secondary">Cancelar</a>
+            <button type="submit" class="btn btn-primary">Salvar</button>
+            <a href="/livros" class="btn btn-secondary">Voltar</a>
         </form>
-
     </div>
+
+    <!-- Inclui o rodapé -->
+    <div th:replace="fragments/rodape :: rodape"></div>
 </body>
 
 </html>

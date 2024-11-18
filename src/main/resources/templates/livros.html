@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Livros</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+
+</head>
+
+<body>
+    <!-- Inclui o cabeçalho -->
+    <div th:replace="~{fragments/cabecalho :: cabecalho}"></div>
+
+    <!-- Conteúdo principal -->
+    <div class="container">
+        <h1>Lista de Livros</h1>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Título</th>
+                    <th>Autor</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="livro : ${livros}">
+                    <td th:text="${livro.id}"></td>
+                    <td th:text="${livro.nome}"></td>
+                    <td th:text="${livro.autor?.nome}"></td>
+                    <td>
+                        <a th:href="@{'/livros/formulario?id=' + ${livro.id}}" class="btn btn-primary">Editar</a>
+                        <a th:href="@{'/livros/excluir/' + ${livro.id}}" class="btn btn-danger">Excluir</a>
+                    </td>
+                </tr>
+                <tr th:if="${livros.size() == 0}">
+                    <td colspan="4" class="text-center">Nenhum livro encontrado.</td>
+                </tr>
+            </tbody>
+
+        </table>
+        <a href="/livros/formulario" class="btn btn-success">Adicionar Livro</a>
+    </div>
+
+    <!-- Inclui o rodapé -->
+    <div th:replace="~{fragments/rodape :: rodape}"></div>
+
+</body>
+
+</html>
