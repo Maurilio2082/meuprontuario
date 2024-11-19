@@ -14,28 +14,50 @@ import java.sql.Statement;
 
 public class LivroDAO {
 
-    public List<Livro> listarTodos() {
+    public List<Livro> listarPorPagina(int page, int pageSize) {
         List<Livro> livros = new ArrayList<>();
-        String sql = "SELECT l.id, l.nome, a.id AS autor_id, a.nome AS autor_nome FROM livros l JOIN autor a ON l.autor_id = a.id";
+        String sql = "SELECT l.id, l.nome, a.id AS autor_id, a.nome AS autor_nome " +
+                "FROM livros l JOIN autor a ON l.autor_id = a.id " +
+                "LIMIT ? OFFSET ?";
+
+        int offset = (page - 1) * pageSize;
 
         try (Connection conn = ConfiguracaoBanco.obterConexao();
-                PreparedStatement stmt = conn.prepareStatement(sql);
-                ResultSet rs = stmt.executeQuery()) {
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            while (rs.next()) {
-                Livro livro = new Livro();
-                livro.setId(rs.getLong("id"));
-                livro.setNome(rs.getString("nome"));
+            stmt.setInt(1, pageSize);
+            stmt.setInt(2, offset);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Livro livro = new Livro();
+                    livro.setId(rs.getLong("id"));
+                    livro.setNome(rs.getString("nome"));
 
-                Autor autor = new Autor(rs.getLong("autor_id"), rs.getString("autor_nome"));
-                livro.setAutor(autor);
+                    Autor autor = new Autor(rs.getLong("autor_id"), rs.getString("autor_nome"));
+                    livro.setAutor(autor);
 
-                livros.add(livro);
+                    livros.add(livro);
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return livros;
+    }
+
+    public int contarLivros() {
+        String sql = "SELECT COUNT(*) FROM livros";
+        try (Connection conn = ConfiguracaoBanco.obterConexao();
+                PreparedStatement stmt = conn.prepareStatement(sql);
+                ResultSet rs = stmt.executeQuery()) {
+
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0; // Retorna 0 se houver erro
     }
 
     public Livro buscarPorId(Long id) {

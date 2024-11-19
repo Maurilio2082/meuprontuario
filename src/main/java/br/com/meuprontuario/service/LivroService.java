@@ -20,8 +20,12 @@ public class LivroService {
         livroDAO.salvar(livro);
     }
 
-    public List<Livro> listarTodos() {
-        return livroDAO.listarTodos();
+    public List<Livro> listarPorPagina(int page, int pageSize) {
+        return livroDAO.listarPorPagina(page, pageSize); // Chama o método de paginação no DAO
+    }
+
+    public int contarLivros() {
+        return livroDAO.contarLivros(); // Conta o total de livros
     }
 
     public Livro buscarPorId(Long id) {
