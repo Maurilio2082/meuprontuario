@@ -7,10 +7,15 @@
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
 
-<body style="font-family: Arial, sans-serif; background-color: #f8f9fa; margin: 0; padding: 0;">
-    <div th:replace="~{fragments/cabecalho :: cabecalho}"></div>
+<body
+    style="font-family: Arial, sans-serif; background-color: #f8f9fa; margin: 0; padding: 0; display: flex; flex-direction: column; min-height: 100vh;">
+    <!-- Cabeçalho -->
+    <div th:replace="~{fragments/cabecalho :: cabecalho}"
+        style="background-color: #6d9792; color: white; text-align: center; padding: 10px 0; position: fixed; top: 0; width: 100%; z-index: 1000;">
+    </div>
 
-    <div class="container" style="padding: 20px;">
+    <!-- Conteúdo principal -->
+    <div class="container" style="padding: 20px; padding-top: 80px; flex-grow: 1;">
         <h1 style="margin-top: 20px; text-align: center; font-size: 2rem; color: #333;">Cadastro de Livros</h1>
         <form th:action="@{/livros/salvar}" method="post"
             style="background-color: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
@@ -19,7 +24,6 @@
                 <input type="hidden" name="id" th:value="${livro?.id}" />
                 <input type="text" id="nome" name="nome" class="form-control" style="font-size: 1rem; padding: 10px;"
                     th:value="${livro?.nome}" required>
-
             </div>
             <div class="form-group" style="margin-bottom: 20px;">
                 <label for="autor" style="font-size: 1.1rem; color: #333; margin-bottom: 5px;">Autor</label>
@@ -38,7 +42,10 @@
         </form>
     </div>
 
-    <div th:replace="~{fragments/rodape :: rodape}"></div>
+    <!-- Rodapé -->
+    <div th:replace="~{fragments/rodape :: rodape}"
+        style="background-color: #6d9792; color: white; text-align: center; padding: 10px 0; position: fixed; bottom: 0; width: 100%;">
+    </div>
 </body>
 
 </html>
