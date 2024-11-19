@@ -33,11 +33,12 @@ public class LivroController {
     public String exibirFormulario(@RequestParam(value = "id", required = false) Long id, Model model) {
         Livro livro = id != null ? livroService.buscarPorId(id) : new Livro();
         List<Autor> autores = autorService.obterListaAutores();
-
+    
         model.addAttribute("livro", livro);
         model.addAttribute("autores", autores); // Lista suspensa de autores
         return "livroformulario";
     }
+    
 
     @PostMapping("/salvar")
     public String salvar(@ModelAttribute Livro livro) {

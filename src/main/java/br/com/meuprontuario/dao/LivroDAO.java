@@ -101,7 +101,7 @@ public class LivroDAO {
             stmt.setLong(2, livro.getAutor().getId());
 
             if (isUpdate) {
-                stmt.setLong(3, livro.getId());
+                stmt.setLong(3, livro.getId()); // Aqui você está garantindo que o ID seja passado para a atualização
             }
 
             stmt.executeUpdate();
