@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Meu Prontuário - Sua saúde em um só lugar</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .hero {
+            background-color: #115c53;
+            color: white;
+            text-align: center;
+            padding: 50px 20px;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+        }
+
+        .hero a {
+            font-size: 1.2rem;
+            padding: 10px 30px;
+            background-color: #17a2b8;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        .features,
+        .about,
+        .footer {
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .features h2,
+        .about h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .features .card,
+        .about .card {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        .footer {
+            background-color: #115c53;
+            color: white;
+            margin-top: auto;
+        }
+
+        .footer p {
+            margin: 0;
+            padding: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Cabeçalho -->
+    <div th:replace="~{fragments/cabecalho :: cabecalho}"></div>
+
+    <!-- Hero Section -->
+    <div class="hero">
+        <h1>Bem-vindo ao Meu Prontuário</h1>
+        <p>"A saúde é o maior tesouro"</p>
+        <a href="/hospitais">Explore</a>
+    </div>
+
+    <!-- Vantagens -->
+    <div class="features container">
+        <h2>Por que usar o Meu Prontuário?</h2>
+        <div class="row g-4">
+            <div class="col-md-3">
+                <div class="card p-3">
+                    <h5>Praticidade</h5>
+                    <p>Centralize seu histórico médico em um só lugar.</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card p-3">
+                    <h5>Transparência</h5>
+                    <p>Saiba como seus dados estão sendo usados.</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card p-3">
+                    <h5>União</h5>
+                    <p>Conecte-se aos hospitais e instituições médicas.</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card p-3">
+                    <h5>Promoção</h5>
+                    <p>Hospitais participantes recebem mais visibilidade.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Funcionalidades -->
+    <div class="about container">
+        <h2>Funcionalidades</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card p-3">
+                    <h5>Importação</h5>
+                    <p>Dados importados automaticamente com opção manual.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card p-3">
+                    <h5>Procedimentos</h5>
+                    <p>Consulte todos os procedimentos realizados.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card p-3">
+                    <h5>Perfil</h5>
+                    <p>Atualize seus dados de forma rápida e simples.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rodapé -->
+    <div class="footer">
+        <p>&copy; 2024 Meu Prontuário. Todos os direitos reservados.</p>
+    </div>
+</body>
+
+</html>

@@ -27,14 +27,14 @@ public class EspecialidadeController {
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", totalPages);
 
-        return "especialidades";
+        return "especialidade-lista";
     }
 
     @GetMapping("/formulario")
     public String exibirFormulario(@RequestParam(value = "id", required = false) Long id, Model model) {
         Especialidade especialidade = id != null ? especialidadeService.buscarPorId(id) : new Especialidade();
         model.addAttribute("especialidade", especialidade);
-        return "especialidadeformulario";
+        return "especialidade-formulario";
     }
 
     @PostMapping("/salvar")
