@@ -18,35 +18,12 @@ public class HospitalService {
     @Autowired
     private EnderecoDAO enderecoDAO;
 
-    public List<Hospital> listarTodos() {
-        return hospitalDAO.listarTodos();
-    }
-
-    public Hospital buscarPorId(int id) {
-        return hospitalDAO.buscarPorId(id);
-    }
-
     public void salvar(Hospital hospital) {
-        // Salvar o endereço primeiro e associar ao hospital
         Endereco endereco = hospital.getEndereco();
         enderecoDAO.salvar(endereco);
 
-        // Salvar o hospital com o ID do endereço
         hospital.setEndereco(endereco);
         hospitalDAO.salvar(hospital);
-    }
-
-    public void excluir(int id) {
-        Hospital hospital = hospitalDAO.buscarPorId(id);
-        if (hospital != null) {
-            // Excluir o hospital
-            hospitalDAO.excluir(id);
-
-            // Excluir o endereço associado
-            enderecoDAO.excluir(hospital.getEndereco().getIdEndereco());
-        } else {
-            throw new IllegalArgumentException("Hospital com o ID " + id + " não encontrado.");
-        }
     }
 
     public List<Hospital> listarPorPagina(int page, int pageSize) {
@@ -55,6 +32,25 @@ public class HospitalService {
 
     public int contarHospitais() {
         return hospitalDAO.contarHospitais();
+    }
+
+    public List<Hospital> listarTodos() {
+        return hospitalDAO.listarTodos();
+    }
+
+    public Hospital buscarPorId(int id) {
+        return hospitalDAO.buscarPorId(id);
+    }
+
+    public void excluir(int id) {
+        Hospital hospital = hospitalDAO.buscarPorId(id);
+        if (hospital != null) {
+            hospitalDAO.excluir(id);
+
+            enderecoDAO.excluir(hospital.getEndereco().getIdEndereco());
+        } else {
+            throw new IllegalArgumentException("Hospital com o ID " + id + " não encontrado.");
+        }
     }
 
 }
