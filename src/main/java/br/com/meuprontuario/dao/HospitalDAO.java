@@ -16,7 +16,7 @@ public class HospitalDAO {
 
     public Hospital buscarPorId(int id) {
         Hospital hospital = null;
-        String sql = "SELECT id_hospital, razao_social, cnpj, email, telefone, categoria, id_endereco FROM hospital WHERE id_hospital = ?";
+        String sql = "SELECT id_hospital, razao_social, cnpj, email, telefone, categoria, id_endereco,cnes FROM hospital WHERE id_hospital = ?";
 
         try (Connection conexao = ConfiguracaoBanco.obterConexao();
                 PreparedStatement stmt = conexao.prepareStatement(sql)) {
@@ -32,7 +32,8 @@ public class HospitalDAO {
                             rs.getString("email"),
                             rs.getString("telefone"),
                             rs.getString("categoria"),
-                            endereco);
+                            endereco,
+                            rs.getString("cnes"));
                 }
             }
         } catch (SQLException e) {
@@ -43,9 +44,9 @@ public class HospitalDAO {
     }
 
     public void salvar(Hospital hospital) {
-        String sql = hospital.getIdHospital() == 0
-                ? "INSERT INTO hospital (razao_social, cnpj, email, telefone, categoria, id_endereco) VALUES (?, ?, ?, ?, ?, ?)"
-                : "UPDATE hospital SET razao_social = ?, cnpj = ?, email = ?, telefone = ?, categoria = ?, id_endereco = ? WHERE id_hospital = ?";
+        String sql = hospital.getIdHospital() != 0
+                ? "UPDATE HOSPITAL SET RAZAO_SOCIAL = ?, CNPJ = ?, EMAIL = ?, TELEFONE = ?, CATEGORIA = ?, ID_ENDERECO = ?, CNES = ? WHERE ID_HOSPITAL = ?"
+                : "INSERT INTO HOSPITAL (RAZAO_SOCIAL, CNPJ, EMAIL, TELEFONE, CATEGORIA, ID_ENDERECO, CNES) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conexao = ConfiguracaoBanco.obterConexao();
                 PreparedStatement stmt = conexao.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -56,8 +57,10 @@ public class HospitalDAO {
             stmt.setString(4, hospital.getTelefone());
             stmt.setString(5, hospital.getCategoria());
             stmt.setInt(6, hospital.getEndereco().getIdEndereco());
+            stmt.setString(7, hospital.getCnes()); // CNES
+
             if (hospital.getIdHospital() != 0) {
-                stmt.setInt(7, hospital.getIdHospital());
+                stmt.setInt(8, hospital.getIdHospital());
             }
 
             stmt.executeUpdate();
@@ -70,7 +73,7 @@ public class HospitalDAO {
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao salvar o hospital.", e);
+            throw new RuntimeException("Erro ao salvar hospital", e);
         }
     }
 
@@ -90,7 +93,7 @@ public class HospitalDAO {
 
     public List<Hospital> listarTodos() {
         List<Hospital> hospitais = new ArrayList<>();
-        String sql = "SELECT id_hospital, razao_social, cnpj, email, telefone, categoria, id_endereco FROM hospital";
+        String sql = "SELECT id_hospital, razao_social, cnpj, email, telefone, categoria, id_endereco, cnes FROM hospital";
 
         try (Connection conexao = ConfiguracaoBanco.obterConexao();
                 PreparedStatement stmt = conexao.prepareStatement(sql);
@@ -105,7 +108,8 @@ public class HospitalDAO {
                         rs.getString("email"),
                         rs.getString("telefone"),
                         rs.getString("categoria"),
-                        endereco);
+                        endereco,
+                        rs.getString("cnes"));
                 hospitais.add(hospital);
             }
         } catch (SQLException e) {
@@ -117,7 +121,7 @@ public class HospitalDAO {
 
     public List<Hospital> listarPorPagina(int page, int pageSize) {
         List<Hospital> hospitais = new ArrayList<>();
-        String sql = "SELECT id_hospital, razao_social, cnpj, email, telefone, categoria, id_endereco FROM hospital LIMIT ? OFFSET ?";
+        String sql = "SELECT id_hospital, razao_social, cnpj, email, telefone, categoria, id_endereco, cnes FROM hospital LIMIT ? OFFSET ?";
         int offset = (page - 1) * pageSize;
 
         try (Connection conexao = ConfiguracaoBanco.obterConexao();
@@ -136,7 +140,8 @@ public class HospitalDAO {
                             rs.getString("email"),
                             rs.getString("telefone"),
                             rs.getString("categoria"),
-                            endereco);
+                            endereco,
+                            rs.getString("cnes"));
                     hospitais.add(hospital);
                 }
             }

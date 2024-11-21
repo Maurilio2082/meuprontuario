@@ -34,7 +34,7 @@ public class HospitalController {
     @GetMapping("/formulario")
     public String exibirFormulario(@RequestParam(value = "id", required = false) Integer id, Model model) {
         Hospital hospital = (id != null) ? hospitalService.buscarPorId(id)
-                : new Hospital(0, "", "", "", "", "", new Endereco());
+                : new Hospital(0, "", "", "", "", "", new Endereco(), "");
         model.addAttribute("hospital", hospital);
         return "hospital-formulario"; // Nome da página HTML correspondente
     }

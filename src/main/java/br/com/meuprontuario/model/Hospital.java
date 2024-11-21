@@ -8,9 +8,11 @@ public class Hospital {
     private String telefone;
     private String categoria;
     private Endereco endereco;
+    private String cnes; // Novo campo CNES
 
+    // Construtores
     public Hospital(int idHospital, String razaoSocial, String cnpj, String email, String telefone, String categoria,
-            Endereco endereco) {
+            Endereco endereco, String cnes) {
         this.idHospital = idHospital;
         this.razaoSocial = razaoSocial;
         this.cnpj = cnpj;
@@ -18,10 +20,11 @@ public class Hospital {
         this.telefone = telefone;
         this.categoria = categoria;
         this.endereco = endereco;
+        this.cnes = cnes;
     }
 
-
-    public Hospital() {}
+    public Hospital() {
+    }
 
     // Getters e Setters
     public int getIdHospital() {
@@ -78,5 +81,13 @@ public class Hospital {
 
     public void setEndereco(Endereco endereco) {
         this.endereco = endereco;
+    }
+
+    public String getCnes() {
+        return cnes;
+    }
+
+    public void setCnes(String cnes) {
+        this.cnes = cnes;
     }
 }
