@@ -1,7 +1,6 @@
 package br.com.meuprontuario.dao;
 
 import br.com.meuprontuario.config.ConfiguracaoBanco;
-import br.com.meuprontuario.model.Endereco;
 import br.com.meuprontuario.model.Especialidade;
 import br.com.meuprontuario.model.Hospital;
 import br.com.meuprontuario.model.Medico;

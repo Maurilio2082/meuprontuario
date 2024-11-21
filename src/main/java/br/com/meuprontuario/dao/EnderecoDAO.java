@@ -12,40 +12,40 @@ import java.util.List;
 public class EnderecoDAO {
 
     public Endereco buscarPorId(int id) {
-        Endereco endereco = null;
-        String sql = "SELECT id_endereco, logradouro, numero, bairro, cidade, estado, cep FROM endereco WHERE id_endereco = ?";
+        String sql = "SELECT * FROM ENDERECO WHERE ID_ENDERECO = ?";
 
         try (Connection conexao = ConfiguracaoBanco.obterConexao();
-             PreparedStatement stmt = conexao.prepareStatement(sql)) {
+                PreparedStatement stmt = conexao.prepareStatement(sql)) {
 
             stmt.setInt(1, id);
+
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    endereco = new Endereco(
-                            rs.getInt("id_endereco"),
-                            rs.getString("logradouro"),
-                            rs.getString("numero"),
-                            rs.getString("bairro"),
-                            rs.getString("cidade"),
-                            rs.getString("estado"),
-                            rs.getString("cep")
-                    );
+                    return new Endereco(
+                            rs.getInt("ID_ENDERECO"),
+                            rs.getString("LOGRADOURO"),
+                            rs.getString("NUMERO"),
+                            rs.getString("BAIRRO"),
+                            rs.getString("CIDADE"),
+                            rs.getString("ESTADO"),
+                            rs.getString("CEP"),
+                            rs.getInt("CODIGO_MUNICIPIO"));
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao buscar o endereço pelo ID.", e);
+            throw new RuntimeException("Erro ao buscar endereço por ID", e);
         }
 
-        return endereco;
+        return null;
     }
 
     public void salvar(Endereco endereco) {
-        String sql = endereco.getIdEndereco() == 0 ?
-                "INSERT INTO endereco (logradouro, numero, bairro, cidade, estado, cep) VALUES (?, ?, ?, ?, ?, ?)" :
-                "UPDATE endereco SET logradouro = ?, numero = ?, bairro = ?, cidade = ?, estado = ?, cep = ? WHERE id_endereco = ?";
+        String sql = endereco.getIdEndereco() != 0
+                ? "UPDATE ENDERECO SET LOGRADOURO = ?, NUMERO = ?, BAIRRO = ?, CIDADE = ?, ESTADO = ?, CEP = ?, CODIGO_MUNICIPIO = ? WHERE ID_ENDERECO = ?"
+                : "INSERT INTO ENDERECO (LOGRADOURO, NUMERO, BAIRRO, CIDADE, ESTADO, CEP, CODIGO_MUNICIPIO) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conexao = ConfiguracaoBanco.obterConexao();
-             PreparedStatement stmt = conexao.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+                PreparedStatement stmt = conexao.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             stmt.setString(1, endereco.getLogradouro());
             stmt.setString(2, endereco.getNumero());
@@ -53,9 +53,10 @@ public class EnderecoDAO {
             stmt.setString(4, endereco.getCidade());
             stmt.setString(5, endereco.getEstado());
             stmt.setString(6, endereco.getCep());
+            stmt.setInt(7, endereco.getCodigoMunicipio());
 
             if (endereco.getIdEndereco() != 0) {
-                stmt.setInt(7, endereco.getIdEndereco());
+                stmt.setInt(8, endereco.getIdEndereco());
             }
 
             stmt.executeUpdate();
@@ -68,7 +69,7 @@ public class EnderecoDAO {
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao salvar o endereço.", e);
+            throw new RuntimeException("Erro ao salvar o endereço", e);
         }
     }
 
@@ -76,7 +77,7 @@ public class EnderecoDAO {
         String sql = "DELETE FROM endereco WHERE id_endereco = ?";
 
         try (Connection conexao = ConfiguracaoBanco.obterConexao();
-             PreparedStatement stmt = conexao.prepareStatement(sql)) {
+                PreparedStatement stmt = conexao.prepareStatement(sql)) {
 
             stmt.setInt(1, id);
             stmt.executeUpdate();
@@ -91,8 +92,8 @@ public class EnderecoDAO {
         String sql = "SELECT id_endereco, logradouro, numero, bairro, cidade, estado, cep FROM endereco";
 
         try (Connection conexao = ConfiguracaoBanco.obterConexao();
-             PreparedStatement stmt = conexao.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
+                PreparedStatement stmt = conexao.prepareStatement(sql);
+                ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
                 Endereco endereco = new Endereco(
@@ -102,7 +103,9 @@ public class EnderecoDAO {
                         rs.getString("bairro"),
                         rs.getString("cidade"),
                         rs.getString("estado"),
-                        rs.getString("cep")
+                        rs.getString("cep"),
+                        rs.getInt("CODIGO_MUNICIPIO")
+
                 );
                 enderecos.add(endereco);
             }

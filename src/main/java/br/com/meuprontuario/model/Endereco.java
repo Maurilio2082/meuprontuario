@@ -1,7 +1,6 @@
 package br.com.meuprontuario.model;
 
 public class Endereco {
-
     private int idEndereco;
     private String logradouro;
     private String numero;
@@ -9,13 +8,11 @@ public class Endereco {
     private String cidade;
     private String estado;
     private String cep;
-    private String latitude;
-    private String longitude;
+    private int codigoMunicipio; // Novo campo
 
-    public Endereco(int idEndereco, String logradouro, String numero, String bairro,
-            String cidade,
-            String estado,
-            String cep) {
+    // Construtor com o novo campo
+    public Endereco(int idEndereco, String logradouro, String numero, String bairro, String cidade, String estado,
+            String cep, int codigoMunicipio) {
         this.idEndereco = idEndereco;
         this.logradouro = logradouro;
         this.numero = numero;
@@ -23,8 +20,15 @@ public class Endereco {
         this.cidade = cidade;
         this.estado = estado;
         this.cep = cep;
-        this.latitude = ""; // Nao vou usar nesse sistema, usar no projeto frontend
-        this.longitude = ""; // Nao vou usar nesse sistema, usar no projeto frontend
+        this.codigoMunicipio = codigoMunicipio;
+    }
+
+    public int getCodigoMunicipio() {
+        return codigoMunicipio;
+    }
+
+    public void setCodigoMunicipio(int codigoMunicipio) {
+        this.codigoMunicipio = codigoMunicipio;
     }
 
     public Endereco() {
@@ -59,14 +63,6 @@ public class Endereco {
         return estado;
     }
 
-    public String getLatitude() {
-        return latitude;
-    }
-
-    public String getLongitude() {
-        return longitude;
-    }
-
     public void setBairro(String bairro) {
         this.bairro = bairro;
     }
@@ -91,16 +87,8 @@ public class Endereco {
         this.estado = estado;
     }
 
-    public void setLatitude(String latitude) {
-        this.latitude = latitude;
-    }
-
     public void setId_endereco(int idEndereco) {
         this.idEndereco = idEndereco;
-    }
-
-    public void setLongitude(String longitude) {
-        this.longitude = longitude;
     }
 
 }
