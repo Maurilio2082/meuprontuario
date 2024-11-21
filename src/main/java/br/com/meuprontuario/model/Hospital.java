@@ -20,6 +20,9 @@ public class Hospital {
         this.endereco = endereco;
     }
 
+
+    public Hospital() {}
+
     // Getters e Setters
     public int getIdHospital() {
         return idHospital;

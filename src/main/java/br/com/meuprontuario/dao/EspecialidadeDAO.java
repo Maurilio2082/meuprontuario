@@ -7,33 +7,52 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.stereotype.Repository;
+
+@Repository
+
 public class EspecialidadeDAO {
 
-    public void salvar(Especialidade especialidade) {
-        String sql = especialidade.getId() != null ? "UPDATE especialidade SET nome_especialidade = ? WHERE id_especialidade = ?"
-                : "INSERT INTO especialidade (nome_especialidade) VALUES (?)";
+    public Especialidade buscarPorId(int id) {
+        String sql = "SELECT * FROM ESPECIALIDADE WHERE ID_ESPECIALIDADE = ?";
 
-        try (Connection conn = ConfiguracaoBanco.obterConexao();
-                PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        try (Connection conexao = ConfiguracaoBanco.obterConexao();
+                PreparedStatement stmt = conexao.prepareStatement(sql)) {
 
-            stmt.setString(1, especialidade.getNome());
-            if (especialidade.getId() != null) {
-                stmt.setLong(2, especialidade.getId());
-            }
+            stmt.setInt(1, id);
 
-            stmt.executeUpdate();
-
-            if (especialidade.getId() == null) {
-                try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
-                    if (generatedKeys.next()) {
-                        especialidade.setId(generatedKeys.getLong(1));
-                    }
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return new Especialidade(
+                            rs.getInt("ID_ESPECIALIDADE"),
+                            rs.getString("NOME_ESPECIALIDADE"));
                 }
             }
-
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao salvar a especialidade", e);
+            throw new RuntimeException("Erro ao buscar especialidade por ID", e);
         }
+
+        return null;
+    }
+
+    public List<Especialidade> listarTodas() {
+        List<Especialidade> especialidades = new ArrayList<>();
+        String sql = "SELECT * FROM ESPECIALIDADE";
+
+        try (Connection conexao = ConfiguracaoBanco.obterConexao();
+                PreparedStatement stmt = conexao.prepareStatement(sql);
+                ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                especialidades.add(new Especialidade(
+                        rs.getInt("ID_ESPECIALIDADE"),
+                        rs.getString("NOME_ESPECIALIDADE")));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao listar especialidades", e);
+        }
+
+        return especialidades;
     }
 
     public List<Especialidade> listarPorPagina(int page, int pageSize) {
@@ -50,7 +69,7 @@ public class EspecialidadeDAO {
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     Especialidade especialidade = new Especialidade();
-                    especialidade.setId(rs.getLong("id_especialidade"));
+                    especialidade.setId(rs.getInt("id_especialidade"));
                     especialidade.setNome(rs.getString("nome_especialidade"));
                     especialidades.add(especialidade);
                 }
@@ -76,35 +95,41 @@ public class EspecialidadeDAO {
         return 0;
     }
 
-    public Especialidade buscarPorId(Long id) {
-        String sql = "SELECT id_especialidade, nome_especialidade FROM especialidade WHERE id_especialidade = ?";
-        try (Connection conn = ConfiguracaoBanco.obterConexao();
-                PreparedStatement stmt = conn.prepareStatement(sql)) {
+    public void salvar(Especialidade especialidade) {
+        String sql = especialidade.getId() != 0
+                ? "UPDATE ESPECIALIDADE SET NOME_ESPECIALIDADE = ? WHERE ID_ESPECIALIDADE = ?"
+                : "INSERT INTO ESPECIALIDADE (NOME_ESPECIALIDADE) VALUES (?)";
 
-            stmt.setLong(1, id);
+        try (Connection conexao = ConfiguracaoBanco.obterConexao();
+                PreparedStatement stmt = conexao.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    Especialidade especialidade = new Especialidade();
-                    especialidade.setId(rs.getLong("id_especialidade"));
-                    especialidade.setNome(rs.getString("nome_especialidade"));
-                    return especialidade;
+            stmt.setString(1, especialidade.getNome());
+            if (especialidade.getId() != 0) {
+                stmt.setInt(2, especialidade.getId());
+            }
+
+            stmt.executeUpdate();
+
+            if (especialidade.getId() == 0) {
+                try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        especialidade.setId(generatedKeys.getInt(1));
+                    }
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao buscar especialidade por ID", e);
+            throw new RuntimeException("Erro ao salvar especialidade", e);
         }
-        return null;
     }
 
-    public void excluir(Long id) {
-        String sql = "DELETE FROM especialidade WHERE id_especialidade = ?";
-        try (Connection conn = ConfiguracaoBanco.obterConexao();
-                PreparedStatement stmt = conn.prepareStatement(sql)) {
+    public void excluir(int id) {
+        String sql = "DELETE FROM ESPECIALIDADE WHERE ID_ESPECIALIDADE = ?";
 
-            stmt.setLong(1, id);
+        try (Connection conexao = ConfiguracaoBanco.obterConexao();
+                PreparedStatement stmt = conexao.prepareStatement(sql)) {
+
+            stmt.setInt(1, id);
             stmt.executeUpdate();
-
         } catch (SQLException e) {
             throw new RuntimeException("Erro ao excluir especialidade", e);
         }

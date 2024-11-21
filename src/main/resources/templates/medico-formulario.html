@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Cadastro de Médico</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Aplicar o Select2 aos campos de seleção
+            $('#especialidade').select2({
+                placeholder: "Selecione uma Especialidade",
+                allowClear: true
+            });
+
+            $('#hospital').select2({
+                placeholder: "Selecione um Hospital",
+                allowClear: true
+            });
+
+            // Verificar se os campos estão preenchidos para habilitar o botão salvar
+            function verificarCampos() {
+                const especialidade = $('#especialidade').val();
+                const hospital = $('#hospital').val();
+                const salvarButton = $('#salvar');
+                salvarButton.prop('disabled', especialidade === "0" || hospital === "0");
+            }
+
+            // Adicionar eventos de mudança
+            $('#especialidade, #hospital').on('change', verificarCampos);
+
+            // Verificar o estado inicial
+            verificarCampos();
+        });
+    </script>
+</head>
+
+<body
+    style="font-family: Arial, sans-serif; background-color: #f8f9fa; margin: 0; padding: 0; display: flex; flex-direction: column; min-height: 100vh;">
+    <!-- Cabeçalho -->
+    <div th:replace="~{fragments/cabecalho :: cabecalho}"></div>
+
+    <!-- Conteúdo principal -->
+    <div class="container" style="padding: 20px; padding-top: 80px; flex-grow: 1;">
+        <h1 th:text="${medico.idMedico != 0 ? 'Editar Médico' : 'Novo Médico'}"
+            style="margin-top: 20px; text-align: center; font-size: 2rem; color: #333;"></h1>
+
+        <form th:action="@{/medicos/salvar}" th:object="${medico}" method="post"
+            style="background-color: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+            <input type="hidden" th:field="*{idMedico}" />
+
+            <!-- Campos do Médico -->
+            <div class="form-group mb-3">
+                <label for="nomeMedico" style="font-size: 1.1rem; color: #333;">Nome</label>
+                <input type="text" id="nomeMedico" th:field="*{nomeMedico}" class="form-control"
+                    style="font-size: 1rem; padding: 10px;" required />
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="conselho" style="font-size: 1.1rem; color: #333;">Conselho</label>
+                <input type="text" id="conselho" th:field="*{conselho}" class="form-control"
+                    style="font-size: 1rem; padding: 10px;" required />
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="especialidade">Especialidade</label>
+                <select id="especialidade" th:field="*{especialidade.id}" class="form-select" style="width: 100%" required>
+                    <option value="0">Selecione uma Especialidade</option>
+                    <option th:each="especialidade : ${especialidades}" th:value="${especialidade.id}"
+                        th:text="${especialidade.nome}"></option>
+                </select>
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="hospital">Hospital</label>
+                <select id="hospital" th:field="*{hospital.idHospital}" class="form-select" style="width: 100%" required>
+                    <option value="0">Selecione um Hospital</option>
+                    <option th:each="hospital : ${hospitais}" th:value="${hospital.idHospital}"
+                        th:text="${hospital.razaoSocial}"></option>
+                </select>
+            </div>
+
+            <!-- Botões -->
+            <div style="margin-top: 20px; display: flex; justify-content: space-between;">
+                <button type="submit" id="salvar" class="btn btn-primary"
+                    style="font-size: 1.1rem; padding: 10px 20px; width: 48%;" disabled>Salvar</button>
+                <a th:href="@{/medicos}" class="btn btn-secondary"
+                    style="font-size: 1.1rem; padding: 10px 20px; width: 48%;">Cancelar</a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Rodapé -->
+    <div th:replace="~{fragments/rodape :: rodape}"></div>
+</body>
+
+</html>

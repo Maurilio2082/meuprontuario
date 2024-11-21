@@ -1,0 +1,115 @@
+package br.com.meuprontuario.dao;
+
+import br.com.meuprontuario.config.ConfiguracaoBanco;
+import br.com.meuprontuario.model.Especialidade;
+import br.com.meuprontuario.model.Hospital;
+import br.com.meuprontuario.model.Medico;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.stereotype.Repository;
+
+@Repository
+
+public class MedicoDAO {
+
+    private HospitalDAO hospitalDAO = new HospitalDAO();
+    private EspecialidadeDAO especialidadeDAO = new EspecialidadeDAO();
+
+    public void salvar(Medico medico) {
+        String sql = medico.getIdMedico() != 0
+                ? "UPDATE MEDICO SET NOME = ?, CONSELHO = ?, ID_HOSPITAL = ?, ID_ESPECIALIDADE = ? WHERE ID_MEDICO = ?"
+                : "INSERT INTO MEDICO (NOME, CONSELHO, ID_HOSPITAL, ID_ESPECIALIDADE) VALUES (?, ?, ?, ?)";
+
+        try (Connection conexao = ConfiguracaoBanco.obterConexao();
+                PreparedStatement stmt = conexao.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
+            stmt.setString(1, medico.getNomeMedico());
+            stmt.setString(2, medico.getConselho());
+            stmt.setInt(3, medico.getHospital().getIdHospital());
+            stmt.setInt(4, medico.getEspecialidade().getId());
+            if (medico.getIdMedico() != 0) {
+                stmt.setInt(5, medico.getIdMedico());
+            }
+
+            stmt.executeUpdate();
+
+            if (medico.getIdMedico() == 0) {
+                try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        medico.setIdMedico(generatedKeys.getInt(1));
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao salvar o médico", e);
+        }
+    }
+
+    public Medico buscarPorId(int id) {
+        String sql = "SELECT * FROM MEDICO WHERE ID_MEDICO = ?";
+
+        try (Connection conexao = ConfiguracaoBanco.obterConexao();
+                PreparedStatement stmt = conexao.prepareStatement(sql)) {
+
+            stmt.setInt(1, id);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    Hospital hospital = hospitalDAO.buscarPorId(rs.getInt("ID_HOSPITAL"));
+                    Especialidade especialidade = especialidadeDAO.buscarPorId(rs.getInt("ID_ESPECIALIDADE"));
+                    return new Medico(
+                            rs.getInt("ID_MEDICO"),
+                            rs.getString("NOME"),
+                            rs.getString("CONSELHO"),
+                            hospital,
+                            especialidade);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao buscar médico por ID", e);
+        }
+
+        return null;
+    }
+
+    public List<Medico> listarTodos() {
+        List<Medico> medicos = new ArrayList<>();
+        String sql = "SELECT * FROM MEDICO";
+
+        try (Connection conexao = ConfiguracaoBanco.obterConexao();
+                PreparedStatement stmt = conexao.prepareStatement(sql);
+                ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                Hospital hospital = hospitalDAO.buscarPorId(rs.getInt("ID_HOSPITAL"));
+                Especialidade especialidade = especialidadeDAO.buscarPorId(rs.getInt("ID_ESPECIALIDADE"));
+                medicos.add(new Medico(
+                        rs.getInt("ID_MEDICO"),
+                        rs.getString("NOME"),
+                        rs.getString("CONSELHO"),
+                        hospital,
+                        especialidade));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao listar médicos", e);
+        }
+
+        return medicos;
+    }
+
+    public void excluir(int id) {
+        String sql = "DELETE FROM MEDICO WHERE ID_MEDICO = ?";
+
+        try (Connection conexao = ConfiguracaoBanco.obterConexao();
+                PreparedStatement stmt = conexao.prepareStatement(sql)) {
+
+            stmt.setInt(1, id);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao excluir médico", e);
+        }
+    }
+}

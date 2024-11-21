@@ -1,23 +1,23 @@
 package br.com.meuprontuario.model;
 
 public class Especialidade {
-    private Long id;
+    private int id;
     private String nome;
 
-    public Especialidade() {
-    }
-
-    public Especialidade(Long id, String nome) {
+    public Especialidade(int id, String nome) {
         this.id = id;
         this.nome = nome;
     }
 
-    // Getters e setters
-    public Long getId() {
+    public Especialidade() {
+    }
+
+    // Getters e Setters
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 

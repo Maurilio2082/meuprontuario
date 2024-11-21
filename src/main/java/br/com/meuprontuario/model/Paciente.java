@@ -22,6 +22,9 @@ public class Paciente {
         this.endereco = endereco;
     }
 
+    public Paciente() {
+    }
+
     public Endereco getEndereco() {
         return endereco;
     }

@@ -31,8 +31,8 @@ public class EspecialidadeController {
     }
 
     @GetMapping("/formulario")
-    public String exibirFormulario(@RequestParam(value = "id", required = false) Long id, Model model) {
-        Especialidade especialidade = id != null ? especialidadeService.buscarPorId(id) : new Especialidade();
+    public String exibirFormulario(@RequestParam(value = "id", required = false) Integer id, Model model) {
+        Especialidade especialidade = (id != null) ? especialidadeService.buscarPorId(id) : new Especialidade(0, "");
         model.addAttribute("especialidade", especialidade);
         return "especialidade-formulario";
     }
@@ -44,7 +44,7 @@ public class EspecialidadeController {
     }
 
     @GetMapping("/excluir/{id}")
-    public String excluir(@PathVariable Long id) {
+    public String excluir(@PathVariable int id) {
         especialidadeService.excluir(id);
         return "redirect:/especialidades";
     }
