@@ -1,6 +1,7 @@
 package br.com.meuprontuario.dao;
 
 import br.com.meuprontuario.config.ConfiguracaoBanco;
+import br.com.meuprontuario.model.Endereco;
 import br.com.meuprontuario.model.Especialidade;
 import br.com.meuprontuario.model.Hospital;
 import br.com.meuprontuario.model.Medico;
@@ -98,6 +99,52 @@ public class MedicoDAO {
         }
 
         return medicos;
+    }
+
+    public List<Medico> listarPorPagina(int page, int pageSize) {
+        List<Medico> medicos = new ArrayList<>();
+        String sql = "SELECT id_medico, nome, conselho, id_hospital, id_especialidade FROM medico LIMIT ? OFFSET ?";
+        int offset = (page - 1) * pageSize;
+
+        try (Connection conexao = ConfiguracaoBanco.obterConexao();
+                PreparedStatement stmt = conexao.prepareStatement(sql)) {
+
+            stmt.setInt(1, pageSize);
+            stmt.setInt(2, offset);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Hospital hospital = hospitalDAO.buscarPorId(rs.getInt("id_hospital"));
+                    Especialidade especialidade = especialidadeDAO.buscarPorId(rs.getInt("id_especialidade"));
+
+                    Medico medico = new Medico(
+                            rs.getInt("id_medico"),
+                            rs.getString("nome"),
+                            rs.getString("conselho"),
+                            hospital,
+                            especialidade);
+                    medicos.add(medico);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao listar médicos por página.", e);
+        }
+        return medicos;
+    }
+
+    public int contarMedicos() {
+        String sql = "SELECT COUNT(*) FROM medico";
+        try (Connection conn = ConfiguracaoBanco.obterConexao();
+                PreparedStatement stmt = conn.prepareStatement(sql);
+                ResultSet rs = stmt.executeQuery()) {
+
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao contar medicos", e);
+        }
+        return 0;
     }
 
     public void excluir(int id) {

@@ -28,8 +28,19 @@ public class MedicoController {
     private HospitalService hospitalService;
 
     @GetMapping
-    public String listar(Model model) {
-        model.addAttribute("medicos", medicoService.listarTodos());
+    public String listar(
+            @RequestParam(value = "page", defaultValue = "1") int page,
+            @RequestParam(value = "size", defaultValue = "10") int pageSize,
+            Model model) {
+
+        List<Medico> medicos = medicoService.listarPorPagina(page, pageSize);
+        int totalMedicos = medicoService.contarMedicos();
+        int totalPages = (int) Math.ceil((double) totalMedicos / pageSize);
+
+        model.addAttribute("medicos", medicos);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", totalPages);
+
         return "medico-lista";
     }
 

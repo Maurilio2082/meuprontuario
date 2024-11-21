@@ -28,4 +28,12 @@ public class MedicoService {
     public void excluir(int id) {
         medicoDAO.excluir(id);
     }
+
+     public List<Medico> listarPorPagina(int page, int pageSize) {
+        return medicoDAO.listarPorPagina(page, pageSize);
+    }
+
+    public int contarMedicos() {
+        return medicoDAO.contarMedicos();
+    }
 }

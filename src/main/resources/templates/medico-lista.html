@@ -28,6 +28,11 @@
                 </tr>
             </thead>
             <tbody>
+                <tr th:if="${medicos == null || medicos.size() == 0}">
+                    <td colspan="6" class="text-center" style="font-size: 1rem; color: #666;">
+                        Nenhum médico encontrado.
+                    </td>
+                </tr>
                 <tr th:each="medico : ${medicos}">
                     <td th:text="${medico.idMedico}" style="vertical-align: middle; text-align: center;"></td>
                     <td th:text="${medico.nomeMedico}" style="vertical-align: middle; text-align: center;"></td>
@@ -46,12 +51,26 @@
                         </a>
                     </td>
                 </tr>
-                <tr th:if="${medicos.size() == 0}">
-                    <td colspan="6" class="text-center" style="font-size: 1rem; color: #666;">Nenhum médico encontrado.
-                    </td>
-                </tr>
             </tbody>
+
         </table>
+
+        <div class="pagination"
+            style="display: flex; justify-content: left; align-items: center; gap: 20px; margin-top: 20px;">
+            <!-- Botão de Página Anterior -->
+            <a th:href="@{'/medicos'(page=${currentPage - 1})}" th:classappend="${currentPage == 1} ? 'disabled'"
+                class="btn btn-primary" style="padding: 10px 20px; text-decoration: none;">Anterior</a>
+
+            <!-- Informações da Página -->
+            <span th:text="'Página ' + ${currentPage} + ' de ' + ${totalPages}"
+                style="font-size: 16px; font-weight: bold; color: #333;"></span>
+
+            <!-- Botão de Próxima Página -->
+            <a th:href="@{'/medicos'(page=${currentPage + 1})}"
+                th:classappend="${currentPage == totalPages} ? 'disabled'" class="btn btn-primary"
+                style="padding: 10px 20px; text-decoration: none;">Próxima</a>
+        </div>
+
 
         <!-- Botão de Adicionar -->
         <a href="/medicos/formulario" class="btn btn-success"
