@@ -64,9 +64,20 @@
                     style="font-size: 1rem; padding: 10px;" required />
             </div>
 
+
+            <div class="form-group" style="margin-bottom: 20px;">
+                <label for="cbo" style="font-size: 1.1rem; color: #333;">CBO</label>
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" id="cbo" th:field="*{cbo}" class="form-control"
+                        style="font-size: 1rem; padding: 10px;" required />
+                </div>
+            </div>
+
+
             <div class="form-group mb-3">
                 <label for="especialidade">Especialidade</label>
-                <select id="especialidade" th:field="*{especialidade.id}" class="form-select" style="width: 100%" required>
+                <select id="especialidade" th:field="*{especialidade.id}" class="form-select" style="width: 100%"
+                    required>
                     <option value="0">Selecione uma Especialidade</option>
                     <option th:each="especialidade : ${especialidades}" th:value="${especialidade.id}"
                         th:text="${especialidade.nome}"></option>
@@ -75,7 +86,8 @@
 
             <div class="form-group mb-3">
                 <label for="hospital">Hospital</label>
-                <select id="hospital" th:field="*{hospital.idHospital}" class="form-select" style="width: 100%" required>
+                <select id="hospital" th:field="*{hospital.idHospital}" class="form-select" style="width: 100%"
+                    required>
                     <option value="0">Selecione um Hospital</option>
                     <option th:each="hospital : ${hospitais}" th:value="${hospital.idHospital}"
                         th:text="${hospital.razaoSocial}"></option>

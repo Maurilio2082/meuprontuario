@@ -21,7 +21,7 @@ public class MedicoDAO {
     public void salvar(Medico medico) {
         String sql = medico.getIdMedico() != 0
                 ? "UPDATE MEDICO SET NOME = ?, CONSELHO = ?, ID_HOSPITAL = ?, ID_ESPECIALIDADE = ? WHERE ID_MEDICO = ?"
-                : "INSERT INTO MEDICO (NOME, CONSELHO, ID_HOSPITAL, ID_ESPECIALIDADE) VALUES (?, ?, ?, ?)";
+                : "INSERT INTO MEDICO (NOME, CONSELHO, ID_HOSPITAL, ID_ESPECIALIDADE,CBO) VALUES (?, ?,?, ?, ?)";
 
         try (Connection conexao = ConfiguracaoBanco.obterConexao();
                 PreparedStatement stmt = conexao.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -65,7 +65,8 @@ public class MedicoDAO {
                             rs.getString("NOME"),
                             rs.getString("CONSELHO"),
                             hospital,
-                            especialidade);
+                            especialidade,
+                            rs.getString("CBO"));
                 }
             }
         } catch (SQLException e) {
@@ -91,7 +92,8 @@ public class MedicoDAO {
                         rs.getString("NOME"),
                         rs.getString("CONSELHO"),
                         hospital,
-                        especialidade));
+                        especialidade,
+                        rs.getString("CBO")));
             }
         } catch (SQLException e) {
             throw new RuntimeException("Erro ao listar médicos", e);
@@ -102,7 +104,7 @@ public class MedicoDAO {
 
     public List<Medico> listarPorPagina(int page, int pageSize) {
         List<Medico> medicos = new ArrayList<>();
-        String sql = "SELECT id_medico, nome, conselho, id_hospital, id_especialidade FROM medico LIMIT ? OFFSET ?";
+        String sql = "SELECT id_medico, nome, conselho, id_hospital, id_especialidade, CBO FROM medico LIMIT ? OFFSET ?";
         int offset = (page - 1) * pageSize;
 
         try (Connection conexao = ConfiguracaoBanco.obterConexao();
@@ -121,7 +123,8 @@ public class MedicoDAO {
                             rs.getString("nome"),
                             rs.getString("conselho"),
                             hospital,
-                            especialidade);
+                            especialidade,
+                            rs.getString("CBO"));
                     medicos.add(medico);
                 }
             }

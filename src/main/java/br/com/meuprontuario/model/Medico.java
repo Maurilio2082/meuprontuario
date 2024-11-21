@@ -6,20 +6,21 @@ public class Medico {
     private String conselho;
     private Hospital hospital;
     private Especialidade especialidade;
+    private String cbo;
 
-    public Medico(int idMedico, String nomeMedico, String conselho, Hospital hospital, Especialidade especialidade) {
+    public Medico(int idMedico, String nomeMedico, String conselho, Hospital hospital, Especialidade especialidade,
+            String cbo) {
         this.idMedico = idMedico;
         this.nomeMedico = nomeMedico;
         this.conselho = conselho;
         this.hospital = hospital;
         this.especialidade = especialidade;
+        this.cbo = cbo;
     }
 
     public Medico() {
-
     }
 
-    // Getters e Setters
     public int getIdMedico() {
         return idMedico;
     }
@@ -60,30 +61,11 @@ public class Medico {
         this.especialidade = especialidade;
     }
 
-    public int getEspecialidadeId() {
-        return especialidade != null ? especialidade.getId() : 0;
+    public String getCbo() {
+        return cbo;
     }
 
-    public void setEspecialidadeId(int especialidadeId) {
-        if (especialidadeId != 0) {
-            this.especialidade = new Especialidade();
-            this.especialidade.setId(especialidadeId);
-        } else {
-            this.especialidade = null;
-        }
+    public void setCbo(String cbo) {
+        this.cbo = cbo;
     }
-
-    public int getHospitalId() {
-        return hospital != null ? hospital.getIdHospital() : 0;
-    }
-
-    public void setHospitalId(int hospitalId) {
-        if (hospitalId != 0) {
-            this.hospital = new Hospital();
-            this.hospital.setIdHospital(hospitalId);
-        } else {
-            this.hospital = null;
-        }
-    }
-
 }
