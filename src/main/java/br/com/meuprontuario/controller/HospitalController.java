@@ -1,5 +1,6 @@
 package br.com.meuprontuario.controller;
 
+import br.com.meuprontuario.dao.HospitalDAO;
 import br.com.meuprontuario.model.Endereco;
 import br.com.meuprontuario.model.Hospital;
 import br.com.meuprontuario.service.HospitalService;
@@ -16,6 +17,8 @@ public class HospitalController {
 
     @Autowired
     private HospitalService hospitalService;
+
+    private final HospitalDAO hospitalDAO = new HospitalDAO();
 
     @GetMapping
     public String listar(@RequestParam(value = "page", defaultValue = "1") int page, Model model) {
@@ -37,6 +40,13 @@ public class HospitalController {
                 : new Hospital(0, "", "", "", "", "", new Endereco(), "");
         model.addAttribute("hospital", hospital);
         return "hospital-formulario"; // Nome da página HTML correspondente
+    }
+
+    @GetMapping("/hospitais/formulario")
+    public String exibirFormulario(@RequestParam int id, Model model) {
+        Hospital hospital = hospitalDAO.buscarPorId(id);
+        model.addAttribute("hospital", hospital);
+        return "hospitais/formulario"; // Retorna a view do formulário do hospital
     }
 
     @PostMapping("/salvar")

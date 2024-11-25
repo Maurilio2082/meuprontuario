@@ -25,9 +25,8 @@ public class LoginService {
     private final HospitalDAO hospitalDAO = new HospitalDAO();
 
     public LoginService() {
-        // Instanciação direta para o protótipo
-        usuarios.put("paciente", new UsuarioPaciente("paciente", "123"));
-        usuarios.put("hospital", new UsuarioHospital("hospital", "456"));
+        usuarios.put("paciente", new UsuarioPaciente("paciente", "123", 0));
+        usuarios.put("hospital", new UsuarioHospital("hospital", "456", 0));
     }
 
     public Usuario autenticar(String login, String senha) {
@@ -41,10 +40,10 @@ public class LoginService {
                     String tipo = rs.getString("TIPO");
                     if ("PACIENTE".equals(tipo)) {
                         Paciente paciente = pacienteDAO.buscarPorId(rs.getInt("ID_PACIENTE"));
-                        return new UsuarioPaciente(paciente.getNomePaciente(), paciente.getCpf());
+                        return new UsuarioPaciente(login, senha, paciente.getIdPaciente());
                     } else if ("HOSPITAL".equals(tipo)) {
                         Hospital hospital = hospitalDAO.buscarPorId(rs.getInt("ID_HOSPITAL"));
-                        return new UsuarioHospital(hospital.getRazaoSocial(), hospital.getCnpj());
+                        return new UsuarioHospital(login, senha, hospital.getIdHospital());
                     }
                 }
             }

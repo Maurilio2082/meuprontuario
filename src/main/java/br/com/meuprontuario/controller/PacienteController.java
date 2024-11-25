@@ -1,5 +1,7 @@
 package br.com.meuprontuario.controller;
 
+import br.com.meuprontuario.dao.HospitalDAO;
+import br.com.meuprontuario.dao.PacienteDAO;
 import br.com.meuprontuario.model.Endereco;
 import br.com.meuprontuario.model.Paciente;
 import br.com.meuprontuario.service.PacienteService;
@@ -17,6 +19,8 @@ public class PacienteController {
     @Autowired
     private PacienteService pacienteService;
 
+    private final PacienteDAO pacienteDAO = new PacienteDAO();
+
     @GetMapping
     public String listar(@RequestParam(value = "page", defaultValue = "1") int page, Model model) {
         int pageSize = 10;
@@ -33,9 +37,17 @@ public class PacienteController {
 
     @GetMapping("/formulario")
     public String exibirFormulario(@RequestParam(value = "id", required = false) Integer id, Model model) {
-        Paciente paciente = id != null ? pacienteService.buscarPorId(id) : new Paciente(0, "", "", "", "", "", new Endereco());
+        Paciente paciente = id != null ? pacienteService.buscarPorId(id)
+                : new Paciente(0, "", "", "", "", "", new Endereco());
         model.addAttribute("paciente", paciente);
         return "paciente-formulario";
+    }
+
+    @GetMapping("/pacientes/formulario")
+    public String exibirFormulario(@RequestParam int id, Model model) {
+        Paciente paciente = pacienteDAO.buscarPorId(id);
+        model.addAttribute("paciente", paciente);
+        return "pacientes/formulario"; // Retorna a view do formulário do paciente
     }
 
     @PostMapping("/salvar")

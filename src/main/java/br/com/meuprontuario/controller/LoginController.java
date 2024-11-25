@@ -26,7 +26,7 @@ public class LoginController {
             Model model) {
         Usuario usuario = loginService.autenticar(username, senha);
         if (usuario != null) {
-            session.setAttribute("usuarioLogado", usuario); // Adiciona o usuário logado à sessão
+            session.setAttribute("usuarioLogado", usuario); // Armazena o usuário logado na sessão
             return usuario.getRedirectPage(); // Redireciona para a página correspondente
         } else {
             model.addAttribute("erro", "Usuário ou senha inválidos");
