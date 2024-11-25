@@ -47,35 +47,60 @@ public class PacienteDAO {
     }
 
     public void salvar(Paciente paciente) {
-        String sql = paciente.getIdPaciente() != 0
+        String sqlPaciente = paciente.getIdPaciente() != 0
                 ? "UPDATE PACIENTE SET NOME = ?, EMAIL = ?, TELEFONE = ?, DATA_NASCIMENTO = ?, CPF = ?, ID_ENDERECO = ? WHERE ID_PACIENTE = ?"
                 : "INSERT INTO PACIENTE (NOME, EMAIL, TELEFONE, DATA_NASCIMENTO, CPF, ID_ENDERECO) VALUES (?, ?, ?, ?, ?, ?)";
 
         try (Connection conexao = ConfiguracaoBanco.obterConexao();
-                PreparedStatement stmt = conexao.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+                PreparedStatement stmtPaciente = conexao.prepareStatement(sqlPaciente,
+                        Statement.RETURN_GENERATED_KEYS)) {
 
-            stmt.setString(1, paciente.getNomePaciente());
-            stmt.setString(2, paciente.getEmail());
-            stmt.setString(3, paciente.getTelefone());
-            stmt.setString(4, paciente.getDataNascimento());
-            stmt.setString(5, paciente.getCpf());
-            stmt.setInt(6, paciente.getEndereco().getIdEndereco());
+            stmtPaciente.setString(1, paciente.getNomePaciente());
+            stmtPaciente.setString(2, paciente.getEmail());
+            stmtPaciente.setString(3, paciente.getTelefone());
+            stmtPaciente.setString(4, paciente.getDataNascimento());
+            stmtPaciente.setString(5, paciente.getCpf());
+            stmtPaciente.setInt(6, paciente.getEndereco().getIdEndereco());
 
             if (paciente.getIdPaciente() != 0) {
-                stmt.setInt(7, paciente.getIdPaciente());
+                stmtPaciente.setInt(7, paciente.getIdPaciente());
             }
 
-            stmt.executeUpdate();
+            stmtPaciente.executeUpdate();
 
+            // Obtém o ID do paciente inserido
             if (paciente.getIdPaciente() == 0) {
-                try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+                try (ResultSet generatedKeys = stmtPaciente.getGeneratedKeys()) {
                     if (generatedKeys.next()) {
                         paciente.setIdPaciente(generatedKeys.getInt(1));
                     }
                 }
             }
+
+            // Adiciona o usuário na tabela usuario
+            inserirUsuario(paciente.getCpf(), "123", "PACIENTE", paciente.getIdPaciente(), null);
+
         } catch (SQLException e) {
             throw new RuntimeException("Erro ao salvar o paciente", e);
+        }
+    }
+
+    private void inserirUsuario(String login, String senha, String tipo, Integer idPaciente, Integer idHospital) {
+        String sqlUsuario = "INSERT INTO USUARIO (LOGIN, SENHA, TIPO, ID_PACIENTE, ID_HOSPITAL) VALUES (?, ?, ?, ?, ?)";
+
+        try (Connection conexao = ConfiguracaoBanco.obterConexao();
+                PreparedStatement stmtUsuario = conexao.prepareStatement(sqlUsuario)) {
+
+            stmtUsuario.setString(1, login);
+            stmtUsuario.setString(2, senha);
+            stmtUsuario.setString(3, tipo);
+            stmtUsuario.setObject(4, idPaciente);
+            stmtUsuario.setObject(5, idHospital);
+
+            stmtUsuario.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao inserir usuário na tabela USUARIO.", e);
         }
     }
 

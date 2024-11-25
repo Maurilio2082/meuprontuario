@@ -44,36 +44,61 @@ public class HospitalDAO {
     }
 
     public void salvar(Hospital hospital) {
-        String sql = hospital.getIdHospital() != 0
+        String sqlHospital = hospital.getIdHospital() != 0
                 ? "UPDATE HOSPITAL SET RAZAO_SOCIAL = ?, CNPJ = ?, EMAIL = ?, TELEFONE = ?, CATEGORIA = ?, ID_ENDERECO = ?, CNES = ? WHERE ID_HOSPITAL = ?"
                 : "INSERT INTO HOSPITAL (RAZAO_SOCIAL, CNPJ, EMAIL, TELEFONE, CATEGORIA, ID_ENDERECO, CNES) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conexao = ConfiguracaoBanco.obterConexao();
-                PreparedStatement stmt = conexao.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+                PreparedStatement stmtHospital = conexao.prepareStatement(sqlHospital,
+                        Statement.RETURN_GENERATED_KEYS)) {
 
-            stmt.setString(1, hospital.getRazaoSocial());
-            stmt.setString(2, hospital.getCnpj());
-            stmt.setString(3, hospital.getEmail());
-            stmt.setString(4, hospital.getTelefone());
-            stmt.setString(5, hospital.getCategoria());
-            stmt.setInt(6, hospital.getEndereco().getIdEndereco());
-            stmt.setString(7, hospital.getCnes()); // CNES
+            stmtHospital.setString(1, hospital.getRazaoSocial());
+            stmtHospital.setString(2, hospital.getCnpj());
+            stmtHospital.setString(3, hospital.getEmail());
+            stmtHospital.setString(4, hospital.getTelefone());
+            stmtHospital.setString(5, hospital.getCategoria());
+            stmtHospital.setInt(6, hospital.getEndereco().getIdEndereco());
+            stmtHospital.setString(7, hospital.getCnes());
 
             if (hospital.getIdHospital() != 0) {
-                stmt.setInt(8, hospital.getIdHospital());
+                stmtHospital.setInt(8, hospital.getIdHospital());
             }
 
-            stmt.executeUpdate();
+            stmtHospital.executeUpdate();
 
+            // Obtém o ID do hospital inserido
             if (hospital.getIdHospital() == 0) {
-                try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+                try (ResultSet generatedKeys = stmtHospital.getGeneratedKeys()) {
                     if (generatedKeys.next()) {
                         hospital.setIdHospital(generatedKeys.getInt(1));
                     }
                 }
             }
+
+            // Adiciona o usuário na tabela usuario
+            inserirUsuario(hospital.getCnpj(), "123", "HOSPITAL", null, hospital.getIdHospital());
+
         } catch (SQLException e) {
             throw new RuntimeException("Erro ao salvar hospital", e);
+        }
+    }
+
+    private void inserirUsuario(String login, String senha, String tipo, Integer idPaciente, Integer idHospital) {
+        String sqlUsuario = "INSERT INTO USUARIO (LOGIN, SENHA, TIPO, ID_PACIENTE, ID_HOSPITAL) VALUES (?, ?, ?, ?, ?)";
+
+        try (Connection conexao = ConfiguracaoBanco.obterConexao();
+                PreparedStatement stmtUsuario = conexao.prepareStatement(sqlUsuario)) {
+
+            stmtUsuario.setString(1, login);
+            stmtUsuario.setString(2, senha);
+            stmtUsuario.setString(3, tipo);
+            stmtUsuario.setObject(4, idPaciente);
+            stmtUsuario.setObject(5, idHospital);
+
+            stmtUsuario.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao inserir usuário na tabela USUARIO.", e);
         }
     }
 
