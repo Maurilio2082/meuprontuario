@@ -18,4 +18,10 @@ public class CidService {
     public Cid buscarPorCodigo(String codCid) {
         return cidDAO.buscarPorCodigo(codCid);
     }
+
+    public List<Cid> listarPorPagina(int page, int pageSize) {
+        int offset = (page - 1) * pageSize;
+        return cidDAO.listarPorPagina(offset, pageSize);
+    }
+
 }

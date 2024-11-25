@@ -54,4 +54,30 @@ public class TabelaTissDAO {
 
         return tiss;
     }
+
+    public List<TabelaTiss> listarPorPagina(int offset, int limit) {
+        List<TabelaTiss> tissList = new ArrayList<>();
+        String sql = "SELECT * FROM tabelatiss LIMIT ? OFFSET ?";
+
+        try (Connection conexao = ConfiguracaoBanco.obterConexao();
+                PreparedStatement stmt = conexao.prepareStatement(sql)) {
+
+            stmt.setInt(1, limit);
+            stmt.setInt(2, offset);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    TabelaTiss tiss = new TabelaTiss(
+                            rs.getLong("codigo_termo"),
+                            rs.getString("descricao"));
+                    tissList.add(tiss);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao listar Tabela TISS por página.", e);
+        }
+
+        return tissList;
+    }
+
 }

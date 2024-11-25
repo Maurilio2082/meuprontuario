@@ -18,4 +18,10 @@ public class TabelaTissService {
     public TabelaTiss buscarPorCodigo(long codigoTermo) {
         return tabelaTissDAO.buscarPorCodigo(codigoTermo);
     }
+
+    public List<TabelaTiss> listarPorPagina(int page, int pageSize) {
+        int offset = (page - 1) * pageSize;
+        return tabelaTissDAO.listarPorPagina(offset, pageSize);
+    }
+
 }

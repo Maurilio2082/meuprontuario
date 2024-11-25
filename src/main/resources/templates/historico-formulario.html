@@ -7,58 +7,6 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            // Aplicar o Select2 aos campos de seleção
-            $('#paciente').select2({
-                placeholder: "Selecione um Paciente",
-                allowClear: true
-            });
-
-            $('#hospital').select2({
-                placeholder: "Selecione um Hospital",
-                allowClear: true
-            });
-
-            $('#especialidade').select2({
-                placeholder: "Selecione uma Especialidade",
-                allowClear: true
-            });
-
-            $('#medico').select2({
-                placeholder: "Selecione um Médico",
-                allowClear: true
-            });
-
-            $('#cid').select2({
-                placeholder: "Selecione um CID",
-                allowClear: true
-            });
-
-            $('#codTiss').select2({
-                placeholder: "Selecione um Termo TISS",
-                allowClear: true
-            });
-
-            // Verificar se os campos estão preenchidos para habilitar o botão salvar
-            function verificarCampos() {
-                const paciente = $('#paciente').val();
-                const hospital = $('#hospital').val();
-                const especialidade = $('#especialidade').val();
-                const medico = $('#medico').val();
-                const cid = $('#cid').val();
-                const codTiss = $('#codTiss').val();
-                const salvarButton = $('#salvar');
-                salvarButton.prop('disabled', !paciente || !hospital || !especialidade || !medico || !cid || !codTiss);
-            }
-
-            // Adicionar eventos de mudança
-            $('#paciente, #hospital, #especialidade, #medico, #cid, #codTiss').on('change', verificarCampos);
-
-            // Verificar o estado inicial
-            verificarCampos();
-        });
-    </script>
 </head>
 
 <body
@@ -136,8 +84,6 @@
                 <label for="cid">CID</label>
                 <select id="cid" th:field="*{cid.codCid}" class="form-select" style="width: 100%" required>
                     <option value="0">Selecione um CID</option>
-                    <option th:each="cid : ${cids}" th:value="${cid.codCid}" th:text="${cid.descricaoAbreviada}">
-                    </option>
                 </select>
             </div>
 
@@ -147,8 +93,6 @@
                 <select id="codTiss" th:field="*{tabelaTiss.codigoTermo}" class="form-select" style="width: 100%"
                     required>
                     <option value="0">Selecione um Termo TISS</option>
-                    <option th:each="tiss : ${tiss}" th:value="${tiss.codigoTermo}" th:text="${tiss.descricao}">
-                    </option>
                 </select>
             </div>
 
@@ -164,6 +108,136 @@
 
     <!-- Rodapé -->
     <div th:replace="~{fragments/rodape :: rodape}"></div>
+
+    <!-- JavaScript no final do body -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            let pageCid = 1;
+            let pageTiss = 1;
+
+            // Configurar Select2 para permitir busca
+            $('#paciente').select2({
+                placeholder: "Selecione um Paciente",
+                allowClear: true,
+                width: '100%'
+            });
+
+            $('#hospital').select2({
+                placeholder: "Selecione um Hospital",
+                allowClear: true,
+                width: '100%'
+            });
+
+            $('#especialidade').select2({
+                placeholder: "Selecione uma Especialidade",
+                allowClear: true,
+                width: '100%'
+            });
+
+            $('#medico').select2({
+                placeholder: "Selecione um Médico",
+                allowClear: true,
+                width: '100%'
+            });
+
+            $('#cid').select2({
+                placeholder: "Selecione um CID",
+                allowClear: true,
+                width: '100%',
+                minimumInputLength: 1,
+                ajax: {
+                    url: '/cids/listar',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return {
+                            q: params.term,
+                            page: params.page || 1,
+                            size: 10
+                        };
+                    },
+                    processResults: function (data, params) {
+                        params.page = params.page || 1;
+                        return {
+                            results: data.map(function (cid) {
+                                return { id: cid.codCid, text: `${cid.codCid} - ${cid.descricaoAbreviada}` };
+                            }),
+                            pagination: {
+                                more: data.length === 10
+                            }
+                        };
+                    },
+                    cache: true
+                }
+            });
+
+            $('#codTiss').select2({
+                placeholder: "Selecione um Termo TISS",
+                allowClear: true,
+                width: '100%',
+                minimumInputLength: 1,
+                ajax: {
+                    url: '/tabelaTiss/listar',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return {
+                            q: params.term,
+                            page: params.page || 1,
+                            size: 10
+                        };
+                    },
+                    processResults: function (data, params) {
+                        params.page = params.page || 1;
+                        return {
+                            results: data.map(function (tiss) {
+                                return { id: tiss.codigoTermo, text: `${tiss.codigoTermo} - ${tiss.descricao}` };
+                            }),
+                            pagination: {
+                                more: data.length === 10
+                            }
+                        };
+                    },
+                    cache: true
+                }
+            });
+
+            // Verificar se os campos estão preenchidos
+            function verificarCampos() {
+                const paciente = $('#paciente').val();
+                const hospital = $('#hospital').val();
+                const especialidade = $('#especialidade').val();
+                const medico = $('#medico').val();
+                const cid = $('#cid').val();
+                const codTiss = $('#codTiss').val();
+                const dataConsulta = $('#dataConsulta').val();
+                const observacao = $('#observacao').val();
+
+                const salvarButton = $('#salvar');
+                const camposValidos =
+                    paciente && paciente !== "0" &&
+                    hospital && hospital !== "0" &&
+                    especialidade && especialidade !== "0" &&
+                    medico && medico !== "0" &&
+                    cid && cid !== "0" &&
+                    codTiss && codTiss !== "0" &&
+                    dataConsulta && dataConsulta.trim() !== "" &&
+                    observacao && observacao.trim() !== "";
+
+                salvarButton.prop('disabled', !camposValidos);
+            }
+
+            // Associar eventos
+            $('#paciente, #hospital, #especialidade, #medico, #cid, #codTiss').on('change', verificarCampos);
+            $('#dataConsulta, #observacao').on('input', verificarCampos);
+
+            // Carregar a primeira página ao abrir
+            loadCids();
+            loadTiss();
+        });
+
+
+    </script>
 </body>
 
 </html>

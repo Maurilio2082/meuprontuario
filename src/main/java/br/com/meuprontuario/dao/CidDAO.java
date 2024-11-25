@@ -56,4 +56,31 @@ public class CidDAO {
 
         return cid;
     }
+
+    public List<Cid> listarPorPagina(int offset, int limit) {
+        List<Cid> cids = new ArrayList<>();
+        String sql = "SELECT * FROM cid LIMIT ? OFFSET ?";
+
+        try (Connection conexao = ConfiguracaoBanco.obterConexao();
+                PreparedStatement stmt = conexao.prepareStatement(sql)) {
+
+            stmt.setInt(1, limit);
+            stmt.setInt(2, offset);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Cid cid = new Cid(
+                            rs.getString("cod_cid"),
+                            rs.getString("descricao"),
+                            rs.getString("descricao_abreviada"));
+                    cids.add(cid);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao listar CIDs por página.", e);
+        }
+
+        return cids;
+    }
+
 }
