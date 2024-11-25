@@ -1,69 +1,3 @@
-use meuprontuario;
-
-DROP TABLE IF EXISTS ESPECIALIDADE;
-DROP TABLE IF EXISTS MEDICO;
-
--- Tabela Endereco
-CREATE TABLE ENDERECO (
-    ID_ENDERECO INT AUTO_INCREMENT NOT NULL,
-    LOGRADOURO VARCHAR(150) NOT NULL,
-    NUMERO VARCHAR(10) NOT NULL,
-    BAIRRO VARCHAR(50) NOT NULL,
-    CIDADE VARCHAR(50) NOT NULL,
-    ESTADO VARCHAR(2) NOT NULL,
-    CEP VARCHAR(8) NOT NULL,
-    PRIMARY KEY (ID_ENDERECO)
-);
-
--- Tabela Hospital
-CREATE TABLE HOSPITAL (
-    ID_HOSPITAL INT AUTO_INCREMENT NOT NULL,
-    RAZAO_SOCIAL VARCHAR(150) NOT NULL,
-    CNPJ VARCHAR(14) NOT NULL,
-    EMAIL VARCHAR(100) NOT NULL,
-    TELEFONE VARCHAR(11) NOT NULL,
-    CATEGORIA VARCHAR(50) NOT NULL,
-    ID_ENDERECO INT NOT NULL,
-    PRIMARY KEY (ID_HOSPITAL),
-    FOREIGN KEY (ID_ENDERECO) REFERENCES ENDERECO(ID_ENDERECO) ON DELETE CASCADE
-);
-
--- Tabela Especialidade
-CREATE TABLE ESPECIALIDADE (
-    ID_ESPECIALIDADE INT AUTO_INCREMENT NOT NULL,
-    NOME_ESPECIALIDADE VARCHAR(100) NOT NULL,
-    PRIMARY KEY (ID_ESPECIALIDADE)
-);
-
--- Tabela Paciente
-CREATE TABLE PACIENTE (
-    ID_PACIENTE INT AUTO_INCREMENT NOT NULL,
-    NOME VARCHAR(150) NOT NULL,
-    EMAIL VARCHAR(100) NOT NULL,
-    TELEFONE VARCHAR(15) NOT NULL,
-    DATA_NASCIMENTO DATE NOT NULL,
-    CPF VARCHAR(11) NOT NULL,
-    ID_ENDERECO INT NOT NULL,
-    PRIMARY KEY (ID_PACIENTE),
-    FOREIGN KEY (ID_ENDERECO) REFERENCES ENDERECO(ID_ENDERECO) ON DELETE CASCADE
-);
-
--- Tabela Medico
-CREATE TABLE MEDICO (
-    ID_MEDICO INT AUTO_INCREMENT NOT NULL,
-    NOME VARCHAR(150) NOT NULL,
-    CONSELHO VARCHAR(50) NOT NULL,
-    ID_HOSPITAL INT NOT NULL,
-    ID_ESPECIALIDADE INT NOT NULL,
-    PRIMARY KEY (ID_MEDICO),
-    FOREIGN KEY (ID_HOSPITAL) REFERENCES HOSPITAL(ID_HOSPITAL) ON DELETE CASCADE,
-    FOREIGN KEY (ID_ESPECIALIDADE) REFERENCES ESPECIALIDADE(ID_ESPECIALIDADE) ON DELETE CASCADE
-);
-
-
-
-CREATE DATABASE  IF NOT EXISTS `meuprontuario` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `meuprontuario`;
 -- MySQL dump 10.13  Distrib 8.0.38, for Win64 (x86_64)
 --
 -- Host: localhost    Database: meuprontuario
@@ -124,7 +58,7 @@ CREATE TABLE `endereco` (
   `CEP` varchar(8) NOT NULL,
   `CODIGO_MUNICIPIO` int DEFAULT NULL,
   PRIMARY KEY (`ID_ENDERECO`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -133,7 +67,7 @@ CREATE TABLE `endereco` (
 
 LOCK TABLES `endereco` WRITE;
 /*!40000 ALTER TABLE `endereco` DISABLE KEYS */;
-INSERT INTO `endereco` VALUES (1,'Rua das Flores','123','Centro','São Paulo','SP','01010000',NULL),(2,'Avenida Paulista','1500','Bela Vista','São Paulo','SP','01310000',NULL),(3,'Rua da Consolação','456','Consolação','São Paulo','SP','01321000',NULL),(4,'Rua do Comercio','789','Liberdade','São Paulo','SP','02020000',NULL),(5,'Avenida Rio Branco','567','Centro','Rio de Janeiro','RJ','20040000',NULL),(6,'Rua das Laranjeiras','135','Laranjeiras','Rio de Janeiro','RJ','22240000',NULL),(7,'Rua 15 de Novembro','234','Vila Mariana','Belo Horizonte','MG','30110000',NULL),(8,'Rua do Sol','89','Liberdade','Salvador','BA','40020100',NULL),(9,'Rua do Porto','1123','Porto da Barra','Salvador','BA','40030100',NULL),(10,'Avenida das Américas','2323','Barra da Tijuca','Rio de Janeiro','RJ','22640000',NULL),(11,'Rua do Carmo','456','Centro','Fortaleza','CE','60020200',NULL),(12,'Avenida Beira Mar','1700','Praia de Iracema','Fortaleza','CE','60030100',NULL),(13,'Rua das Pedras','301','Centro','Niterói','RJ','24020000',NULL),(14,'Avenida Epitácio Pessoa','4567','Tambaú','João Pessoa','PB','58025000',NULL),(15,'Rua do Rio','1234','Centro','Recife','PE','50040000',NULL),(16,'Avenida Soteco','50','São Gabriel','Guarapari','ES','29213220',NULL),(17,'Avenida Soteco','150','São Gabriel','Guarapari','ES','29213220',3202405),(18,'DOUTOR JOAO DOS SANTOS NEVES','143','VILA RUBIM','Vitória','ES','29025023',3205309);
+INSERT INTO `endereco` VALUES (1,'Avenida Soteco','150','São Gabriel','Guarapari','ES','29213220',3202405),(2,'Rua Manoel Simões Freire','6587','São Cristóvão','Vitória','ES','29048475',3205309);
 /*!40000 ALTER TABLE `endereco` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -148,7 +82,7 @@ CREATE TABLE `especialidade` (
   `ID_ESPECIALIDADE` int NOT NULL AUTO_INCREMENT,
   `NOME_ESPECIALIDADE` varchar(100) NOT NULL,
   PRIMARY KEY (`ID_ESPECIALIDADE`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -157,7 +91,7 @@ CREATE TABLE `especialidade` (
 
 LOCK TABLES `especialidade` WRITE;
 /*!40000 ALTER TABLE `especialidade` DISABLE KEYS */;
-INSERT INTO `especialidade` VALUES (2,'Nutricionista'),(3,'Psicologo'),(4,'Clinico Geral'),(5,'Dermatologista'),(6,'Psiquiatra');
+INSERT INTO `especialidade` VALUES (1,'Nutricionista'),(2,'Psicologo'),(3,'Neurologia'),(4,'Ginecologista'),(5,'Andrologia'),(6,'Ortopedia'),(7,'fonodiologa '),(8,'Angiorradiologia '),(9,'Pediátrica '),(10,'Dermatologia '),(11,'Infectologia ');
 /*!40000 ALTER TABLE `especialidade` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -179,7 +113,7 @@ CREATE TABLE `historico` (
   `cod_cid` varchar(10) DEFAULT NULL,
   `cod_tiss` bigint DEFAULT NULL,
   PRIMARY KEY (`id_historico`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -188,7 +122,7 @@ CREATE TABLE `historico` (
 
 LOCK TABLES `historico` WRITE;
 /*!40000 ALTER TABLE `historico` DISABLE KEYS */;
-INSERT INTO `historico` VALUES (1,'1999-08-29','o cara estava mau',1,28,2,0,NULL,NULL),(2,'2024-02-29','DSDSD',1,17,2,2,'A000',10101012);
+INSERT INTO `historico` VALUES (3,'2024-10-29','fortes dores de cabeça, indicado paracetamol.',1,1,1,2,'A01',10101012);
 /*!40000 ALTER TABLE `historico` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -208,8 +142,10 @@ CREATE TABLE `hospital` (
   `CATEGORIA` varchar(50) NOT NULL,
   `ID_ENDERECO` int NOT NULL,
   `cnes` varchar(20) DEFAULT NULL,
-  PRIMARY KEY (`ID_HOSPITAL`)
-) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  PRIMARY KEY (`ID_HOSPITAL`),
+  KEY `endereco_hospital_fk` (`ID_ENDERECO`),
+  CONSTRAINT `endereco_hospital_fk` FOREIGN KEY (`ID_ENDERECO`) REFERENCES `endereco` (`ID_ENDERECO`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -218,7 +154,7 @@ CREATE TABLE `hospital` (
 
 LOCK TABLES `hospital` WRITE;
 /*!40000 ALTER TABLE `hospital` DISABLE KEYS */;
-INSERT INTO `hospital` VALUES (16,'Hospital das Flores','12345678000199','contato@hospitalflores.com.br','40028922','Emergência',1,NULL),(17,'Hospital Paulista','23456789000110','contato@hospitalpaulista.com.br','40023944','Clínica',2,NULL),(18,'Hospital da Consolação','34567890100122','contato@hospitalconsolacao.com.br','40629234','Urgência',3,NULL),(19,'Hospital Comercial','45678901200133','contato@hospitalcomercial.com.br','40732365','Clínica',4,NULL),(20,'Hospital Rio Branco','56789012300144','contato@hospitalriobranco.com.br','30994567','Emergência',5,NULL),(21,'Hospital das Laranjeiras','67890123400155','contato@hospitallaranjeiras.com.br','31456789','Urgência',6,NULL),(22,'Hospital 15 de Novembro','78901234500166','contato@hospital15novembro.com.br','32549812','Clínica',7,NULL),(23,'Hospital do Sol','89012345600177','contato@hospitalsol.com.br','30992334','Emergência',8,NULL),(24,'Hospital do Porto','90123456700188','contato@hospitalporto.com.br','32453456','Urgência',9,NULL),(25,'Hospital Barra da Tijuca','12340123400199','contato@hospitalbarra.com.br','32115678','Clínica',10,NULL),(26,'Hospital do Carmo','23451234500200','contato@hospitalcarmo.com.br','33328765','Emergência',11,NULL),(27,'Hospital Beira Mar','34562345600211','contato@hospitalbeiramar.com.br','32215678','Urgência',12,NULL),(28,'Hospital das Pedras','45673456700222','contato@hospitalpedras.com.br','31894567','Clínica',13,NULL),(29,'Hospital Epitácio Pessoa','56784567800233','contato@hospitalepitacio.com.br','32247890','Emergência',14,NULL),(30,'Hospital do Rio','67895678900244','contato@hospitaldorio.com.br','33652345','Urgência',15,NULL),(31,'IRMANDADE DA SANTA CASA DE MISERICORDIA DE VITORIA','28141190000186','provedoria@santacasavitoria.org','32127260','geral',18,'226545');
+INSERT INTO `hospital` VALUES (1,'teste hospital','28911309000152','teste@gmail.com','155115481','geral',1,NULL);
 /*!40000 ALTER TABLE `hospital` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -236,8 +172,12 @@ CREATE TABLE `medico` (
   `ID_HOSPITAL` int NOT NULL,
   `ID_ESPECIALIDADE` int NOT NULL,
   `cbo` varchar(10) DEFAULT NULL,
-  PRIMARY KEY (`ID_MEDICO`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  PRIMARY KEY (`ID_MEDICO`),
+  KEY `ID_HOSPITAL` (`ID_HOSPITAL`),
+  KEY `ID_ESPECIALIDADE` (`ID_ESPECIALIDADE`),
+  CONSTRAINT `medico_ibfk_1` FOREIGN KEY (`ID_HOSPITAL`) REFERENCES `hospital` (`ID_HOSPITAL`) ON DELETE CASCADE,
+  CONSTRAINT `medico_ibfk_2` FOREIGN KEY (`ID_ESPECIALIDADE`) REFERENCES `especialidade` (`ID_ESPECIALIDADE`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -246,7 +186,7 @@ CREATE TABLE `medico` (
 
 LOCK TABLES `medico` WRITE;
 /*!40000 ALTER TABLE `medico` DISABLE KEYS */;
-INSERT INTO `medico` VALUES (2,'teste','654656',17,3,NULL);
+INSERT INTO `medico` VALUES (1,'Roberto Carie','65481',1,2,NULL);
 /*!40000 ALTER TABLE `medico` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -259,14 +199,16 @@ DROP TABLE IF EXISTS `paciente`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `paciente` (
   `ID_PACIENTE` int NOT NULL AUTO_INCREMENT,
-  `NOME` varchar(100) NOT NULL,
-  `CPF` varchar(11) NOT NULL,
+  `NOME` varchar(150) NOT NULL,
   `EMAIL` varchar(100) NOT NULL,
-  `TELEFONE` varchar(11) NOT NULL,
+  `TELEFONE` varchar(15) NOT NULL,
   `DATA_NASCIMENTO` date NOT NULL,
+  `CPF` varchar(11) NOT NULL,
   `ID_ENDERECO` int NOT NULL,
-  PRIMARY KEY (`ID_PACIENTE`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  PRIMARY KEY (`ID_PACIENTE`),
+  KEY `ID_ENDERECO` (`ID_ENDERECO`),
+  CONSTRAINT `paciente_ibfk_1` FOREIGN KEY (`ID_ENDERECO`) REFERENCES `endereco` (`ID_ENDERECO`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -275,7 +217,7 @@ CREATE TABLE `paciente` (
 
 LOCK TABLES `paciente` WRITE;
 /*!40000 ALTER TABLE `paciente` DISABLE KEYS */;
-INSERT INTO `paciente` VALUES (1,'miss teste','13598495722','mauriliomg8@gmail.com','975431577','1999-08-29',0),(2,'senhor teste','2115845648','maurilio@mg.com','61541546','1814-04-29',16),(3,'roberto','506450','roberto@gmail.com','45555','2021-01-29',17);
+INSERT INTO `paciente` VALUES (1,'Maurilio','mauriliomg8@gmail.com','1515584514','1999-08-29','1359849555',2);
 /*!40000 ALTER TABLE `paciente` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -332,7 +274,7 @@ CREATE TABLE `usuario` (
 
 LOCK TABLES `usuario` WRITE;
 /*!40000 ALTER TABLE `usuario` DISABLE KEYS */;
-INSERT INTO `usuario` VALUES (1,'13598495722','123','PACIENTE',1,NULL),(2,'506450','123','PACIENTE',3,NULL),(3,'28141190000186','123','HOSPITAL',NULL,31);
+INSERT INTO `usuario` VALUES (1,'13598495722','123','PACIENTE',1,NULL),(2,'28911309000152','123','HOSPITAL',NULL,1);
 /*!40000 ALTER TABLE `usuario` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -345,4 +287,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-11-25  4:04:42
+-- Dump completed on 2024-11-25 13:01:12
