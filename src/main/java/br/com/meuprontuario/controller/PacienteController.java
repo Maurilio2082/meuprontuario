@@ -32,7 +32,7 @@ public class PacienteController {
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", totalPages);
 
-        return "paciente-lista";
+        return "redirect:/pacientes/historico";
     }
 
     @GetMapping("/formulario")
