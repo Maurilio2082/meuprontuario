@@ -4,22 +4,29 @@ public class Historico {
     private int idHistorico;
     private String dataConsulta;
     private String observacao;
+    private Cid cid = new Cid("", "", "");
+    private TabelaTiss tabelaTiss = new TabelaTiss(0, "");
     private Paciente idPaciente = new Paciente(0, "", "", "", "", "", null);
     private Hospital idHospital = new Hospital(0, "", "", "", "", "", null, "");
     private Medico idMedico = new Medico(0, "", "", null, null, "");
     private Especialidade idEspecialidade = new Especialidade(0, "");
 
     public Historico(int idHistorico, String dataConsulta, String observacao,
-            Paciente idPaciente, Hospital idHospital, Medico idMedico, Especialidade idEspecialidade) {
+            Paciente idPaciente, Hospital idHospital, Medico idMedico, Especialidade idEspecialidade,
+            Cid cid, TabelaTiss tabelaTiss) {
 
         this.idHistorico = idHistorico;
         this.dataConsulta = dataConsulta;
         this.observacao = observacao;
         this.idPaciente = idPaciente;
         this.idHospital = idHospital;
-        this.idEspecialidade = idEspecialidade;
         this.idMedico = idMedico;
+        this.idEspecialidade = idEspecialidade;
+        this.cid = cid;
+        this.tabelaTiss = tabelaTiss;
     }
+
+    // Getters e Setters (já existentes)
 
     public Historico() {
     }
@@ -86,5 +93,21 @@ public class Historico {
 
     public Especialidade getIdEspecialidade() {
         return idEspecialidade;
+    }
+
+    public Cid getCid() {
+        return cid;
+    }
+
+    public TabelaTiss getTabelaTiss() {
+        return tabelaTiss;
+    }
+
+    public void setCid(Cid cid) {
+        this.cid = cid;
+    }
+
+    public void setTabelaTiss(TabelaTiss tabelaTiss) {
+        this.tabelaTiss = tabelaTiss;
     }
 }

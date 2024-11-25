@@ -1,15 +1,19 @@
 package br.com.meuprontuario.controller;
 
+import br.com.meuprontuario.model.Cid;
 import br.com.meuprontuario.model.Especialidade;
 import br.com.meuprontuario.model.Historico;
 import br.com.meuprontuario.model.Hospital;
 import br.com.meuprontuario.model.Medico;
 import br.com.meuprontuario.model.Paciente;
+import br.com.meuprontuario.model.TabelaTiss;
+import br.com.meuprontuario.service.CidService;
 import br.com.meuprontuario.service.EspecialidadeService;
 import br.com.meuprontuario.service.HistoricoService;
 import br.com.meuprontuario.service.HospitalService;
 import br.com.meuprontuario.service.MedicoService;
 import br.com.meuprontuario.service.PacienteService;
+import br.com.meuprontuario.service.TabelaTissService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -36,6 +40,12 @@ public class HistoricoController {
 
     @Autowired
     private EspecialidadeService especialidadeService;
+
+    @Autowired
+    private TabelaTissService tabelaTissService;
+
+    @Autowired
+    private CidService cidService;
 
     @GetMapping
     public String listar(
@@ -72,11 +82,21 @@ public class HistoricoController {
             historico.setIdEspecialidade(new Especialidade(0, ""));
         }
 
+        if (historico.getCid() == null) {
+            historico.setCid(new Cid(null, null, null));
+        }
+
+        if (historico.getTabelaTiss() == null) {
+            historico.setTabelaTiss(new TabelaTiss(0, ""));
+        }
+
         model.addAttribute("historico", historico);
         model.addAttribute("pacientes", pacienteService.listarTodos());
         model.addAttribute("hospitais", hospitalService.listarTodos());
         model.addAttribute("medicos", medicoService.listarTodos());
         model.addAttribute("especialidades", especialidadeService.listarTodas());
+        model.addAttribute("cids", cidService.listarTodos());
+        model.addAttribute("tiss", tabelaTissService.listarTodos());
 
         return "historico-formulario";
     }

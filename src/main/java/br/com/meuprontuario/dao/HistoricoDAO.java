@@ -13,19 +13,18 @@ import java.util.List;
 public class HistoricoDAO {
 
     private final EspecialidadeDAO especialidadeDAO = new EspecialidadeDAO();
-
     private final MedicoDAO medicoDAO = new MedicoDAO();
-
     private final PacienteDAO pacienteDAO = new PacienteDAO();
-
     private final HospitalDAO hospitalDAO = new HospitalDAO();
+    private final CidDAO cidDAO = new CidDAO();
+    private final TabelaTissDAO tabelaTissDAO = new TabelaTissDAO();
 
     public Historico buscarPorId(int id) {
         String sql = "SELECT * FROM historico WHERE id_historico = ?";
         Historico historico = null;
 
         try (Connection conexao = ConfiguracaoBanco.obterConexao();
-                PreparedStatement stmt = conexao.prepareStatement(sql)) {
+             PreparedStatement stmt = conexao.prepareStatement(sql)) {
 
             stmt.setInt(1, id);
             try (ResultSet rs = stmt.executeQuery()) {
@@ -41,11 +40,11 @@ public class HistoricoDAO {
 
     public void salvar(Historico historico) {
         String sql = historico.getIdHistorico() != 0
-                ? "UPDATE historico SET data_consulta = ?, observacao = ?, id_paciente = ?, id_hospital = ?, id_medico = ?, id_especialidade = ? WHERE id_historico = ?"
-                : "INSERT INTO historico (data_consulta, observacao, id_paciente, id_hospital, id_medico, id_especialidade) VALUES (?, ?, ?, ?, ?, ?)";
+                ? "UPDATE historico SET data_consulta = ?, observacao = ?, id_paciente = ?, id_hospital = ?, id_medico = ?, id_especialidade = ?, cod_cid = ?, cod_tiss = ? WHERE id_historico = ?"
+                : "INSERT INTO historico (data_consulta, observacao, id_paciente, id_hospital, id_medico, id_especialidade, cod_cid, cod_tiss) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conexao = ConfiguracaoBanco.obterConexao();
-                PreparedStatement stmt = conexao.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+             PreparedStatement stmt = conexao.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             stmt.setString(1, historico.getDataConsulta());
             stmt.setString(2, historico.getObservacao());
@@ -53,9 +52,11 @@ public class HistoricoDAO {
             stmt.setInt(4, historico.getIdHospital().getIdHospital());
             stmt.setInt(5, historico.getIdMedico().getIdMedico());
             stmt.setInt(6, historico.getIdEspecialidade().getId());
+            stmt.setString(7, historico.getCid().getCodCid());
+            stmt.setLong(8, historico.getTabelaTiss().getCodigoTermo());
 
             if (historico.getIdHistorico() != 0) {
-                stmt.setInt(7, historico.getIdHistorico());
+                stmt.setInt(9, historico.getIdHistorico());
             }
 
             stmt.executeUpdate();
@@ -76,7 +77,7 @@ public class HistoricoDAO {
         String sql = "DELETE FROM historico WHERE id_historico = ?";
 
         try (Connection conexao = ConfiguracaoBanco.obterConexao();
-                PreparedStatement stmt = conexao.prepareStatement(sql)) {
+             PreparedStatement stmt = conexao.prepareStatement(sql)) {
 
             stmt.setInt(1, id);
             stmt.executeUpdate();
@@ -91,25 +92,11 @@ public class HistoricoDAO {
         List<Historico> historicos = new ArrayList<>();
 
         try (Connection conexao = ConfiguracaoBanco.obterConexao();
-                PreparedStatement stmt = conexao.prepareStatement(sql);
-                ResultSet rs = stmt.executeQuery()) {
+             PreparedStatement stmt = conexao.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
-
-                Paciente paciente = pacienteDAO.buscarPorId(rs.getInt("id_paciente"));
-                Hospital hospital = hospitalDAO.buscarPorId(rs.getInt("id_hospital"));
-                Medico medico = medicoDAO.buscarPorId(rs.getInt("id_medico"));
-                Especialidade especialidade = especialidadeDAO.buscarPorId(rs.getInt("id_especialidade"));
-
-                Historico historico = new Historico(
-                        rs.getInt("id_historico"),
-                        rs.getString("data_consulta"),
-                        rs.getString("observacao"),
-                        paciente,
-                        hospital,
-                        medico,
-                        especialidade);
-
+                Historico historico = criarHistoricoAPartirDoResultSet(rs);
                 historicos.add(historico);
             }
         } catch (SQLException e) {
@@ -120,19 +107,15 @@ public class HistoricoDAO {
     }
 
     private Historico criarHistoricoAPartirDoResultSet(ResultSet rs) throws SQLException {
-        // Simulação do retorno de objetos relacionados
-        Paciente paciente = new Paciente();
-        paciente.setIdPaciente(rs.getInt("id_paciente"));
+        // Buscando as entidades relacionadas
+        Paciente paciente = pacienteDAO.buscarPorId(rs.getInt("id_paciente"));
+        Hospital hospital = hospitalDAO.buscarPorId(rs.getInt("id_hospital"));
+        Medico medico = medicoDAO.buscarPorId(rs.getInt("id_medico"));
+        Especialidade especialidade = especialidadeDAO.buscarPorId(rs.getInt("id_especialidade"));
+        Cid cid = cidDAO.buscarPorCodigo(rs.getString("cod_cid"));
+        TabelaTiss tabelaTiss = tabelaTissDAO.buscarPorCodigo(rs.getLong("cod_tiss"));
 
-        Hospital hospital = new Hospital();
-        hospital.setIdHospital(rs.getInt("id_hospital"));
-
-        Medico medico = new Medico();
-        medico.setIdMedico(rs.getInt("id_medico"));
-
-        Especialidade especialidade = new Especialidade();
-        especialidade.setId(rs.getInt("id_especialidade"));
-
+        // Criando o objeto Historico
         return new Historico(
                 rs.getInt("id_historico"),
                 rs.getString("data_consulta"),
@@ -140,7 +123,10 @@ public class HistoricoDAO {
                 paciente,
                 hospital,
                 medico,
-                especialidade);
+                especialidade,
+                cid,
+                tabelaTiss
+        );
     }
 
     public List<Historico> listarPorPagina(int page, int pageSize) {
@@ -149,27 +135,14 @@ public class HistoricoDAO {
         int offset = (page - 1) * pageSize;
 
         try (Connection conexao = ConfiguracaoBanco.obterConexao();
-                PreparedStatement stmt = conexao.prepareStatement(sql)) {
+             PreparedStatement stmt = conexao.prepareStatement(sql)) {
 
             stmt.setInt(1, pageSize);
             stmt.setInt(2, offset);
 
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                    Paciente paciente = pacienteDAO.buscarPorId(rs.getInt("id_paciente"));
-                    Hospital hospital = hospitalDAO.buscarPorId(rs.getInt("id_hospital"));
-                    Medico medico = medicoDAO.buscarPorId(rs.getInt("id_medico"));
-                    Especialidade especialidade = especialidadeDAO.buscarPorId(rs.getInt("id_especialidade"));
-
-                    Historico historico = new Historico(
-                            rs.getInt("id_historico"),
-                            rs.getString("data_consulta"),
-                            rs.getString("observacao"),
-                            paciente,
-                            hospital,
-                            medico,
-                            especialidade);
-
+                    Historico historico = criarHistoricoAPartirDoResultSet(rs);
                     historicos.add(historico);
                 }
             }
@@ -183,8 +156,8 @@ public class HistoricoDAO {
     public int contarHistoricos() {
         String sql = "SELECT COUNT(*) FROM historico";
         try (Connection conexao = ConfiguracaoBanco.obterConexao();
-                PreparedStatement stmt = conexao.prepareStatement(sql);
-                ResultSet rs = stmt.executeQuery()) {
+             PreparedStatement stmt = conexao.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
 
             if (rs.next()) {
                 return rs.getInt(1);
@@ -194,5 +167,4 @@ public class HistoricoDAO {
         }
         return 0;
     }
-
 }
