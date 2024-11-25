@@ -21,13 +21,6 @@ import java.util.List;
 @Service
 public class HistoricoService {
 
-    private final EspecialidadeService especialidadeService = new EspecialidadeService();
-    private final MedicoService medicoService = new MedicoService();
-    private final PacienteService pacienteService = new PacienteService();
-    private final HospitalService hospitalService = new HospitalService();
-    private final CidService cidService = new CidService();
-    private final TabelaTissService tabelaTissService = new TabelaTissService();
-
     @Autowired
     private HistoricoDAO historicoDAO;
 
@@ -48,8 +41,6 @@ public class HistoricoService {
 
     @Autowired
     private TabelaTissDAO tabelaTissDAO;
-
-    
 
     public Historico buscarPorId(int id) {
         return historicoDAO.buscarPorId(id);
