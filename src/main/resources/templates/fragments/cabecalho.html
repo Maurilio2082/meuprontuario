@@ -11,44 +11,45 @@
     <div id="cabecalho" th:fragment="cabecalho">
         <nav class="navbar navbar-expand-lg" style="background-color: #6d9792; padding: 10px 20px;">
             <div class="container-fluid">
-                <!-- Logo no lado esquerdo -->
                 <a class="navbar-brand d-flex align-items-center" href="/" style="color: #ffffff; font-weight: bold;">
-                    <img src="/images/logo.png" alt="Logo" style="height: 40px; margin-right: 10px;"></a>
+                    <img src="/images/logo.png" alt="Logo" style="height: 40px; margin-right: 10px;">
+                </a>
 
-                <!-- Botão para menu responsivo -->
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                     aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"
                     style="border-color: #ffffff;">
                     <span class="navbar-toggler-icon" style="filter: invert(1);"></span>
                 </button>
 
-                <!-- Menu no lado direito -->
                 <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-                    <ul class="navbar-nav">
-                        <li class="nav-item">
+                    <ul class="navbar-nav" th:if="${usuarioLogado != null}">
+                        <li class="nav-item"
+                            th:if="${usuarioLogado instanceof T(br.com.meuprontuario.model.UsuarioPaciente)}">
+                            <a class="nav-link" href="/pacientes" style="color: #ffffff; font-weight: 600;">Paciente</a>
+                        </li>
+                        <li class="nav-item"
+                            th:if="${usuarioLogado instanceof T(br.com.meuprontuario.model.UsuarioHospital)}">
                             <a class="nav-link" href="/hospitais" style="color: #ffffff; font-weight: 600;">Hospital</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/especialidades"
-                                style="color: #ffffff; font-weight: 600;">Especialidade</a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link" href="/pacientes" style="color: #ffffff; font-weight: 600;">Paciente</a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link" href="/medicos" style="color: #ffffff; font-weight: 600;">Medico</a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link" href="/historicos"
-                                style="color: #ffffff; font-weight: 600;">Consulta</a>
+                            <a class="nav-link" href="/login/logout"
+                                style="color: #ffffff; font-weight: 600;">Logout</a>
                         </li>
                     </ul>
+                    <ul class="navbar-nav" th:if="${usuarioLogado == null}">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/login" style="color: #ffffff; font-weight: 600;">Login</a>
+                        </li>
+                    </ul>
+
+
+
                 </div>
             </div>
         </nav>
+    </div>
+
+    </nav>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
