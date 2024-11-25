@@ -10,6 +10,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.stereotype.Repository;
+
+@Repository
+
 public class TabelaTissDAO {
 
     public List<TabelaTiss> listarTodos() {

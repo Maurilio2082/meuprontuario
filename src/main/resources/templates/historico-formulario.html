@@ -9,234 +9,134 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 </head>
 
-<body
-    style="font-family: Arial, sans-serif; background-color: #f8f9fa; margin: 0; padding: 0; display: flex; flex-direction: column; min-height: 100vh;">
+<body style="font-family: Arial, sans-serif; background-color: #f8f9fa; margin: 0; padding: 0; min-height: 100vh;">
     <!-- Cabeçalho -->
     <div th:replace="~{fragments/cabecalho :: cabecalho}"></div>
 
-    <!-- Conteúdo principal -->
-    <div class="container" style="padding: 20px; padding-top: 80px; flex-grow: 1;">
-        <h1 th:text="${historico.idHistorico != 0 ? 'Editar Histórico' : 'Novo Histórico'}"
-            style="margin-top: 20px; text-align: center; font-size: 2rem; color: #333;"></h1>
+    <div class="container" style="padding-top: 80px;">
+        <h1 style="text-align: center; font-size: 2rem; color: #333; margin-bottom: 30px;">Gerenciamento de Histórico
+        </h1>
 
-        <form th:action="@{/historicos/salvar}" th:object="${historico}" method="post"
-            style="background-color: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
-            <input type="hidden" th:field="*{idHistorico}" />
+        <!-- Mensagens -->
+        <div th:if="${mensagem != null}" class="alert alert-success" th:text="${mensagem}"></div>
+        <div th:if="${erro != null}" class="alert alert-danger" th:text="${erro}"></div>
 
-            <!-- Campos do Histórico -->
-            <div class="form-group mb-3">
-                <label for="dataConsulta" style="font-size: 1.1rem; color: #333;">Data da Consulta</label>
-                <input type="date" id="dataConsulta" th:field="*{dataConsulta}" class="form-control"
-                    style="font-size: 1rem; padding: 10px;" required />
+        <!-- Importação XML -->
+        <div class="card mb-4">
+            <div class="card-header" style="background-color: #115c53; color: white;">
+                <h4>Importar Histórico via XML</h4>
             </div>
-
-            <div class="form-group mb-3">
-                <label for="observacao" style="font-size: 1.1rem; color: #333;">Observação</label>
-                <textarea id="observacao" th:field="*{observacao}" class="form-control"
-                    style="font-size: 1rem; padding: 10px;" rows="4"></textarea>
+            <div class="card-body">
+                <form th:action="@{/historicos/importar}" method="post" enctype="multipart/form-data">
+                    <div class="form-group mb-3">
+                        <label for="arquivoXML" style="font-size: 1.1rem; color: #333;">Selecione o arquivo XML</label>
+                        <input type="file" id="arquivoXML" name="arquivo" class="form-control" accept=".xml" required>
+                    </div>
+                    <button type="submit" class="btn btn-success" style="width: 100%;">Importar Histórico</button>
+                </form>
             </div>
+        </div>
 
-            <!-- Seleção de Paciente -->
-            <div class="form-group mb-3">
-                <label for="paciente">Paciente</label>
-                <select id="paciente" th:field="*{idPaciente.idPaciente}" class="form-select" style="width: 100%"
-                    required>
-                    <option value="0">Selecione um Paciente</option>
-                    <option th:each="paciente : ${pacientes}" th:value="${paciente.idPaciente}"
-                        th:text="${paciente.nomePaciente}"></option>
-                </select>
+        <!-- Cadastro Manual -->
+        <div class="card">
+            <div class="card-header" style="background-color: #115c53; color: white;">
+                <h4
+                    th:text="${historico != null && historico.idHistorico != 0 ? 'Editar Histórico' : 'Novo Histórico'}">
+                </h4>
             </div>
+            <div class="card-body">
+                <form th:action="@{/historicos/salvar}" th:object="${historico}" method="post">
+                    <input type="hidden" th:field="*{idHistorico}" />
 
-            <!-- Seleção de Hospital -->
-            <div class="form-group mb-3">
-                <label for="hospital">Hospital</label>
-                <select id="hospital" th:field="*{idHospital.idHospital}" class="form-select" style="width: 100%"
-                    required>
-                    <option value="0">Selecione um Hospital</option>
-                    <option th:each="hospital : ${hospitais}" th:value="${hospital.idHospital}"
-                        th:text="${hospital.razaoSocial}"></option>
-                </select>
-            </div>
+                    <!-- Campos do Histórico -->
+                    <div class="form-group mb-3">
+                        <label for="dataConsulta">Data da Consulta</label>
+                        <input type="date" id="dataConsulta" th:field="*{dataConsulta}" class="form-control" required />
+                    </div>
 
-            <!-- Seleção de Especialidade -->
-            <div class="form-group mb-3">
-                <label for="especialidade">Especialidade</label>
-                <select id="especialidade" th:field="*{idEspecialidade.id}" class="form-select" style="width: 100%"
-                    required>
-                    <option value="0">Selecione uma Especialidade</option>
-                    <option th:each="especialidade : ${especialidades}" th:value="${especialidade.id}"
-                        th:text="${especialidade.nome}"></option>
-                </select>
-            </div>
+                    <div class="form-group mb-3">
+                        <label for="observacao">Observação</label>
+                        <textarea id="observacao" th:field="*{observacao}" class="form-control" rows="4"></textarea>
+                    </div>
 
-            <!-- Seleção de Médico -->
-            <div class="form-group mb-3">
-                <label for="medico">Médico</label>
-                <select id="medico" th:field="*{idMedico.idMedico}" class="form-select" style="width: 100%" required>
-                    <option value="0">Selecione um Médico</option>
-                    <option th:each="medico : ${medicos}" th:value="${medico.idMedico}" th:text="${medico.nomeMedico}">
-                    </option>
-                </select>
-            </div>
+                    <!-- Seleção de Paciente -->
+                    <div class="form-group mb-3">
+                        <label for="paciente">Paciente</label>
+                        <select id="paciente" th:field="*{idPaciente.idPaciente}" class="form-select" required>
+                            <option value="0">Selecione um Paciente</option>
+                            <option th:each="paciente : ${pacientes}" th:value="${paciente.idPaciente}"
+                                th:text="${paciente.nomePaciente}"></option>
+                        </select>
+                    </div>
 
-            <!-- Seleção de CID -->
-            <div class="form-group mb-3">
-                <label for="cid">CID</label>
-                <select id="cid" th:field="*{cid.codCid}" class="form-select" style="width: 100%" required>
-                    <option value="0">Selecione um CID</option>
-                </select>
-            </div>
+                    <!-- Seleção de Hospital -->
+                    <div class="form-group mb-3">
+                        <label for="hospital">Hospital</label>
+                        <select id="hospital" th:field="*{idHospital.idHospital}" class="form-select" required>
+                            <option value="0">Selecione um Hospital</option>
+                            <option th:each="hospital : ${hospitais}" th:value="${hospital.idHospital}"
+                                th:text="${hospital.razaoSocial}"></option>
+                        </select>
+                    </div>
 
-            <!-- Seleção de Tabela TISS -->
-            <div class="form-group mb-3">
-                <label for="codTiss">Tabela TISS</label>
-                <select id="codTiss" th:field="*{tabelaTiss.codigoTermo}" class="form-select" style="width: 100%"
-                    required>
-                    <option value="0">Selecione um Termo TISS</option>
-                </select>
-            </div>
+                    <!-- Seleção de Especialidade -->
+                    <div class="form-group mb-3">
+                        <label for="especialidade">Especialidade</label>
+                        <select id="especialidade" th:field="*{idEspecialidade.id}" class="form-select" required>
+                            <option value="0">Selecione uma Especialidade</option>
+                            <option th:each="especialidade : ${especialidades}" th:value="${especialidade.id}"
+                                th:text="${especialidade.nome}"></option>
+                        </select>
+                    </div>
 
-            <!-- Botões -->
-            <div style="margin-top: 20px; display: flex; justify-content: space-between;">
-                <button type="submit" id="salvar" class="btn btn-primary"
-                    style="font-size: 1.1rem; padding: 10px 20px; width: 48%;" disabled>Salvar</button>
-                <a th:href="@{/historicos}" class="btn btn-secondary"
-                    style="font-size: 1.1rem; padding: 10px 20px; width: 48%;">Cancelar</a>
+                    <!-- Seleção de Médico -->
+                    <div class="form-group mb-3">
+                        <label for="medico">Médico</label>
+                        <select id="medico" th:field="*{idMedico.idMedico}" class="form-select" required>
+                            <option value="0">Selecione um Médico</option>
+                            <option th:each="medico : ${medicos}" th:value="${medico.idMedico}"
+                                th:text="${medico.nomeMedico}"></option>
+                        </select>
+                    </div>
+
+                    <!-- Seleção de CID -->
+                    <div class="form-group mb-3">
+                        <label for="cid">CID</label>
+                        <select id="cid" th:field="*{cid.codCid}" class="form-select" required>
+                            <option value="0">Selecione um CID</option>
+                        </select>
+                    </div>
+
+                    <!-- Seleção de Tabela TISS -->
+                    <div class="form-group mb-3">
+                        <label for="codTiss">Tabela TISS</label>
+                        <select id="codTiss" th:field="*{tabelaTiss.codigoTermo}" class="form-select" required>
+                            <option value="0">Selecione um Termo TISS</option>
+                        </select>
+                    </div>
+
+                    <!-- Botões -->
+                    <div style="display: flex; justify-content: space-between;">
+                        <button type="submit" id="salvar" class="btn btn-primary" style="width: 48%;"
+                            disabled>Salvar</button>
+                        <a th:href="@{/historicos}" class="btn btn-secondary" style="width: 48%;">Cancelar</a>
+                    </div>
+                </form>
             </div>
-        </form>
+        </div>
     </div>
 
     <!-- Rodapé -->
     <div th:replace="~{fragments/rodape :: rodape}"></div>
 
-    <!-- JavaScript no final do body -->
+    <!-- JavaScript -->
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            let pageCid = 1;
-            let pageTiss = 1;
-
-            // Configurar Select2 para permitir busca
-            $('#paciente').select2({
-                placeholder: "Selecione um Paciente",
-                allowClear: true,
-                width: '100%'
-            });
-
-            $('#hospital').select2({
-                placeholder: "Selecione um Hospital",
-                allowClear: true,
-                width: '100%'
-            });
-
-            $('#especialidade').select2({
-                placeholder: "Selecione uma Especialidade",
-                allowClear: true,
-                width: '100%'
-            });
-
-            $('#medico').select2({
-                placeholder: "Selecione um Médico",
-                allowClear: true,
-                width: '100%'
-            });
-
-            $('#cid').select2({
-                placeholder: "Selecione um CID",
-                allowClear: true,
+            $('#paciente, #hospital, #especialidade, #medico, #cid, #codTiss').select2({
                 width: '100%',
-                minimumInputLength: 1,
-                ajax: {
-                    url: '/cids/listar',
-                    dataType: 'json',
-                    delay: 250,
-                    data: function (params) {
-                        return {
-                            q: params.term,
-                            page: params.page || 1,
-                            size: 10
-                        };
-                    },
-                    processResults: function (data, params) {
-                        params.page = params.page || 1;
-                        return {
-                            results: data.map(function (cid) {
-                                return { id: cid.codCid, text: `${cid.codCid} - ${cid.descricaoAbreviada}` };
-                            }),
-                            pagination: {
-                                more: data.length === 10
-                            }
-                        };
-                    },
-                    cache: true
-                }
+                placeholder: "Selecione uma opção"
             });
-
-            $('#codTiss').select2({
-                placeholder: "Selecione um Termo TISS",
-                allowClear: true,
-                width: '100%',
-                minimumInputLength: 1,
-                ajax: {
-                    url: '/tabelaTiss/listar',
-                    dataType: 'json',
-                    delay: 250,
-                    data: function (params) {
-                        return {
-                            q: params.term,
-                            page: params.page || 1,
-                            size: 10
-                        };
-                    },
-                    processResults: function (data, params) {
-                        params.page = params.page || 1;
-                        return {
-                            results: data.map(function (tiss) {
-                                return { id: tiss.codigoTermo, text: `${tiss.codigoTermo} - ${tiss.descricao}` };
-                            }),
-                            pagination: {
-                                more: data.length === 10
-                            }
-                        };
-                    },
-                    cache: true
-                }
-            });
-
-            // Verificar se os campos estão preenchidos
-            function verificarCampos() {
-                const paciente = $('#paciente').val();
-                const hospital = $('#hospital').val();
-                const especialidade = $('#especialidade').val();
-                const medico = $('#medico').val();
-                const cid = $('#cid').val();
-                const codTiss = $('#codTiss').val();
-                const dataConsulta = $('#dataConsulta').val();
-                const observacao = $('#observacao').val();
-
-                const salvarButton = $('#salvar');
-                const camposValidos =
-                    paciente && paciente !== "0" &&
-                    hospital && hospital !== "0" &&
-                    especialidade && especialidade !== "0" &&
-                    medico && medico !== "0" &&
-                    cid && cid !== "0" &&
-                    codTiss && codTiss !== "0" &&
-                    dataConsulta && dataConsulta.trim() !== "" &&
-                    observacao && observacao.trim() !== "";
-
-                salvarButton.prop('disabled', !camposValidos);
-            }
-
-            // Associar eventos
-            $('#paciente, #hospital, #especialidade, #medico, #cid, #codTiss').on('change', verificarCampos);
-            $('#dataConsulta, #observacao').on('input', verificarCampos);
-
-            // Carregar a primeira página ao abrir
-            loadCids();
-            loadTiss();
         });
-
-
     </script>
 </body>
 

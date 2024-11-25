@@ -7,25 +7,27 @@
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Arial', sans-serif;
             background-color: #f8f9fa;
             margin: 0;
             padding: 0;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
         }
 
         .hero {
-            background-color: #115c53;
+            background: linear-gradient(to right, #115c53, #17a2b8);
             color: white;
             text-align: center;
-            padding: 50px 20px;
+            padding: 80px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
 
         .hero h1 {
-            font-size: 3rem;
+            font-size: 4rem;
             margin-bottom: 20px;
+            font-weight: bold;
         }
 
         .hero p {
@@ -36,39 +38,58 @@
         .hero a {
             font-size: 1.2rem;
             padding: 10px 30px;
-            background-color: #17a2b8;
-            color: white;
+            background-color: #ffffff;
+            color: #115c53;
             text-decoration: none;
-            border-radius: 5px;
+            border-radius: 50px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .hero a:hover {
+            background-color: #115c53;
+            color: white;
         }
 
         .features,
         .about {
-            padding: 40px 20px;
-            text-align: center;
+            padding: 60px 20px;
         }
 
         .features h2,
         .about h2 {
-            margin-bottom: 20px;
+            text-align: center;
+            font-size: 2.5rem;
             color: #333;
+            margin-bottom: 40px;
         }
 
         .features .card,
         .about .card {
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             border-radius: 8px;
+            border: none;
+            transition: transform 0.3s;
+        }
+
+        .features .card:hover,
+        .about .card:hover {
+            transform: translateY(-10px);
         }
 
         .rodape {
             background-color: #115c53;
             color: white;
             text-align: center;
-            padding: 10px 0;
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
+            padding: 20px 0;
+        }
+
+        .rodape a {
+            color: #17a2b8;
+            text-decoration: none;
+        }
+
+        .rodape a:hover {
+            color: #ffffff;
         }
     </style>
 </head>
@@ -81,7 +102,7 @@
     <div class="hero">
         <h1>Bem-vindo ao Meu Prontuário</h1>
         <p>"A saúde é o maior tesouro"</p>
-        <a href="/login" class="btn btn-primary">Login</a>
+        <a href="/login" class="btn">Entrar Agora</a>
     </div>
 
     <!-- Vantagens -->
@@ -89,26 +110,26 @@
         <h2>Por que usar o Meu Prontuário?</h2>
         <div class="row g-4">
             <div class="col-md-3">
-                <div class="card p-3">
-                    <h5>Praticidade</h5>
+                <div class="card p-3 text-center">
+                    <h5 class="mb-3">Praticidade</h5>
                     <p>Centralize seu histórico médico em um só lugar.</p>
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="card p-3">
-                    <h5>Transparência</h5>
+                <div class="card p-3 text-center">
+                    <h5 class="mb-3">Transparência</h5>
                     <p>Saiba como seus dados estão sendo usados.</p>
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="card p-3">
-                    <h5>União</h5>
+                <div class="card p-3 text-center">
+                    <h5 class="mb-3">União</h5>
                     <p>Conecte-se aos hospitais e instituições médicas.</p>
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="card p-3">
-                    <h5>Promoção</h5>
+                <div class="card p-3 text-center">
+                    <h5 class="mb-3">Promoção</h5>
                     <p>Hospitais participantes recebem mais visibilidade.</p>
                 </div>
             </div>
@@ -120,30 +141,31 @@
         <h2>Funcionalidades</h2>
         <div class="row g-4">
             <div class="col-md-4">
-                <div class="card p-3">
-                    <h5>Importação</h5>
+                <div class="card p-3 text-center">
+                    <h5 class="mb-3">Importação</h5>
                     <p>Dados importados automaticamente com opção manual.</p>
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="card p-3">
-                    <h5>Procedimentos</h5>
+                <div class="card p-3 text-center">
+                    <h5 class="mb-3">Procedimentos</h5>
                     <p>Consulte todos os procedimentos realizados.</p>
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="card p-3">
-                    <h5>Perfil</h5>
+                <div class="card p-3 text-center">
+                    <h5 class="mb-3">Perfil</h5>
                     <p>Atualize seus dados de forma rápida e simples.</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Rodapé -->
-    <div class="rodape">
-        &copy; 2024 Meu Prontuário. Todos os direitos reservados.
-    </div>
+
+
+    <div th:replace="~{fragments/rodape :: rodape}"></div>
+
+
 </body>
 
 </html>

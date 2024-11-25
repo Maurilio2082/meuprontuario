@@ -1,0 +1,22 @@
+<historicos>
+    <historico>
+        <dataConsulta>2024-11-01</dataConsulta>
+        <observacao>Exame de rotina</observacao>
+        <idPaciente>1</idPaciente>
+        <idHospital>1</idHospital>
+        <idMedico>1</idMedico>
+        <idEspecialidade>2</idEspecialidade>
+        <codCid>A01</codCid>
+        <codigoTermo>10101012</codigoTermo>
+    </historico>
+    <historico>
+        <dataConsulta>2024-11-05</dataConsulta>
+        <observacao>Consulta para avaliação psicológica</observacao>
+        <idPaciente>1</idPaciente>
+        <idHospital>1</idHospital>
+        <idMedico>1</idMedico>
+        <idEspecialidade>3</idEspecialidade>
+        <codCid>A01</codCid>
+        <codigoTermo>10101012</codigoTermo>
+    </historico>
+</historicos>

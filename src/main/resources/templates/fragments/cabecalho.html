@@ -9,26 +9,34 @@
 
 <body>
     <div id="cabecalho" th:fragment="cabecalho">
-        <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #6d9792; padding: 10px 20px;">
+        <nav class="navbar navbar-expand-lg" style="background: linear-gradient(to right, #115c53, #17a2b8); padding: 20px;">
             <div class="container-fluid">
-                <!-- Logo com redirecionamento dinâmico -->
-                <a class="navbar-brand d-flex align-items-center" th:href="@{/}"
-                   th:if="${usuarioLogado == null}" style="color: #ffffff; font-weight: bold;">
-                    <img src="/images/logo.png" alt="Logo" style="height: 40px; margin-right: 10px;"> Meu Prontuário
-                </a>
-                <a class="navbar-brand d-flex align-items-center" th:href="@{/pacientes/historico}"
-                   th:if="${usuarioLogado instanceof T(br.com.meuprontuario.model.UsuarioPaciente)}"
-                   style="color: #ffffff; font-weight: bold;">
-                    <img src="/images/logo.png" alt="Logo" style="height: 40px; margin-right: 10px;"> Meu Prontuário
-                </a>
-                <a class="navbar-brand d-flex align-items-center" th:href="@{/hospitais}"
-                   th:if="${usuarioLogado instanceof T(br.com.meuprontuario.model.UsuarioHospital)}"
-                   style="color: #ffffff; font-weight: bold;">
-                    <img src="/images/logo.png" alt="Logo" style="height: 40px; margin-right: 10px;"> Meu Prontuário
-                </a>
+                <!-- Título estilizado à esquerda -->
+                <div style="display: flex; align-items: center;">
+                    <div style="text-align: left;">
+                        <h1 style="
+                            font-family: Arial, sans-serif;
+                            font-size: 2.5rem;
+                            font-weight: bold;
+                            margin: 0;
+                            color: white;">
+                            <span style="color: white;">Meu</span>
+                            <span style="color: #17a2b8;">Prontuário</span>
+                        </h1>
+                        <p style="
+                            font-family: Arial, sans-serif;
+                            font-size: 1rem;
+                            margin: 5px 0 0;
+                            padding-left: 40px;
+                            color: white;
+                            font-style: italic;">
+                                "A saúde é o maior tesouro."
+                        </p>
+                    </div>
+                </div>
 
                 <!-- Botão de colapso para dispositivos menores -->
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                     aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"
                     style="border-color: #ffffff;">
                     <span class="navbar-toggler-icon" style="filter: invert(1);"></span>
@@ -38,40 +46,33 @@
                 <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
                     <ul class="navbar-nav">
                         <!-- Menu para Paciente -->
-                        <li class="nav-item"
-                            th:if="${usuarioLogado instanceof T(br.com.meuprontuario.model.UsuarioPaciente)}">
+                        <li class="nav-item" th:if="${usuarioLogado instanceof T(br.com.meuprontuario.model.UsuarioPaciente)}">
                             <a class="nav-link" href="/pacientes/historico"
                                 style="color: #ffffff; font-weight: 600;">Consultas</a>
                         </li>
-                        <li class="nav-item"
-                            th:if="${usuarioLogado instanceof T(br.com.meuprontuario.model.UsuarioPaciente)}">
+                        <li class="nav-item" th:if="${usuarioLogado instanceof T(br.com.meuprontuario.model.UsuarioPaciente)}">
                             <a class="nav-link" th:href="@{/pacientes/formulario(id=${usuarioLogado.idPaciente})}"
                                 style="color: #ffffff; font-weight: 600;">Perfil</a>
                         </li>
 
                         <!-- Menu para Hospital -->
-                        <li class="nav-item"
-                            th:if="${usuarioLogado instanceof T(br.com.meuprontuario.model.UsuarioHospital)}">
+                        <li class="nav-item" th:if="${usuarioLogado instanceof T(br.com.meuprontuario.model.UsuarioHospital)}">
                             <a class="nav-link" href="/pacientes"
                                 style="color: #ffffff; font-weight: 600;">Pacientes</a>
                         </li>
-                        <li class="nav-item"
-                            th:if="${usuarioLogado instanceof T(br.com.meuprontuario.model.UsuarioHospital)}">
+                        <li class="nav-item" th:if="${usuarioLogado instanceof T(br.com.meuprontuario.model.UsuarioHospital)}">
                             <a class="nav-link" href="/especialidades"
                                 style="color: #ffffff; font-weight: 600;">Especialidades</a>
                         </li>
-                        <li class="nav-item"
-                            th:if="${usuarioLogado instanceof T(br.com.meuprontuario.model.UsuarioHospital)}">
+                        <li class="nav-item" th:if="${usuarioLogado instanceof T(br.com.meuprontuario.model.UsuarioHospital)}">
                             <a class="nav-link" href="/hospitais"
                                 style="color: #ffffff; font-weight: 600;">Hospitais</a>
                         </li>
-                        <li class="nav-item"
-                            th:if="${usuarioLogado instanceof T(br.com.meuprontuario.model.UsuarioHospital)}">
+                        <li class="nav-item" th:if="${usuarioLogado instanceof T(br.com.meuprontuario.model.UsuarioHospital)}">
                             <a class="nav-link" href="/historicos"
                                 style="color: #ffffff; font-weight: 600;">Histórico</a>
                         </li>
-                        <li class="nav-item"
-                            th:if="${usuarioLogado instanceof T(br.com.meuprontuario.model.UsuarioHospital)}">
+                        <li class="nav-item" th:if="${usuarioLogado instanceof T(br.com.meuprontuario.model.UsuarioHospital)}">
                             <a class="nav-link" th:href="@{/hospitais/formulario(id=${usuarioLogado.idHospital})}"
                                 style="color: #ffffff; font-weight: 600;">Perfil</a>
                         </li>

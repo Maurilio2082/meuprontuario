@@ -19,6 +19,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -68,7 +70,7 @@ public class HistoricoController {
     public String exibirFormulario(@RequestParam(value = "id", required = false) Integer id, Model model) {
         Historico historico = (id != null) ? historicoService.buscarPorId(id) : new Historico();
 
-        // Certifique-se de inicializar corretamente os objetos relacionados
+        // Inicialização padrão
         if (historico.getIdPaciente() == null) {
             historico.setIdPaciente(new Paciente(0, "", "", "", "", "", null));
         }
@@ -81,11 +83,9 @@ public class HistoricoController {
         if (historico.getIdEspecialidade() == null) {
             historico.setIdEspecialidade(new Especialidade(0, ""));
         }
-
         if (historico.getCid() == null) {
-            historico.setCid(new Cid(null, null, null));
+            historico.setCid(new Cid("", "", ""));
         }
-
         if (historico.getTabelaTiss() == null) {
             historico.setTabelaTiss(new TabelaTiss(0, ""));
         }
@@ -112,4 +112,34 @@ public class HistoricoController {
         historicoService.excluir(id);
         return "redirect:/historicos";
     }
+
+    @PostMapping("/importar")
+    public String importarArquivoXML(@RequestParam("arquivo") MultipartFile arquivo,
+            RedirectAttributes redirectAttributes) {
+        if (arquivo.isEmpty()) {
+            redirectAttributes.addFlashAttribute("erro",
+                    "Nenhum arquivo foi enviado. Por favor, selecione um arquivo XML.");
+            return "redirect:/historicos/formulario";
+        }
+
+        try {
+            List<Historico> historicosImportados = historicoService.importarHistoricosDeXML(arquivo);
+
+            if (historicosImportados.isEmpty()) {
+                redirectAttributes.addFlashAttribute("erro", "O arquivo XML não contém registros válidos.");
+            } else {
+                historicosImportados.forEach(historico -> {
+                    historicoService.salvar(historico);
+                });
+                redirectAttributes.addFlashAttribute("mensagem",
+                        "Importação realizada com sucesso! Registros importados: " + historicosImportados.size());
+            }
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("erro", "Erro ao processar o arquivo: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return "redirect:/historicos/formulario";
+    }
+
 }
