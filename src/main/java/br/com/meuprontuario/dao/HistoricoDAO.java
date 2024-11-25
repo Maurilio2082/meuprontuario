@@ -106,7 +106,7 @@ public class HistoricoDAO {
         return historicos;
     }
 
-    private Historico criarHistoricoAPartirDoResultSet(ResultSet rs) throws SQLException {
+    protected  Historico criarHistoricoAPartirDoResultSet(ResultSet rs) throws SQLException {
         // Buscando as entidades relacionadas
         Paciente paciente = pacienteDAO.buscarPorId(rs.getInt("id_paciente"));
         Hospital hospital = hospitalDAO.buscarPorId(rs.getInt("id_hospital"));

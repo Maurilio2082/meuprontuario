@@ -1,6 +1,6 @@
 package br.com.meuprontuario.controller;
 
-import br.com.meuprontuario.dao.HospitalDAO;
+
 import br.com.meuprontuario.dao.PacienteDAO;
 import br.com.meuprontuario.model.Endereco;
 import br.com.meuprontuario.model.Paciente;

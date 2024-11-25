@@ -18,7 +18,7 @@ public class UsuarioPaciente extends Usuario {
 
     @Override
     public String getRedirectPage() {
-        return "redirect:/pacientes";
+        return "redirect:/pacientes/historico";
     }
 
 }
