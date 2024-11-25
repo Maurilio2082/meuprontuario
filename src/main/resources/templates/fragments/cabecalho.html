@@ -11,9 +11,20 @@
     <div id="cabecalho" th:fragment="cabecalho">
         <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #6d9792; padding: 10px 20px;">
             <div class="container-fluid">
-                <!-- Logo -->
-                <a class="navbar-brand d-flex align-items-center" href="/" style="color: #ffffff; font-weight: bold;">
-                    <img src="/images/logo.png" alt="Logo" style="height: 40px; margin-right: 10px;"> 
+                <!-- Logo com redirecionamento dinâmico -->
+                <a class="navbar-brand d-flex align-items-center" th:href="@{/}"
+                   th:if="${usuarioLogado == null}" style="color: #ffffff; font-weight: bold;">
+                    <img src="/images/logo.png" alt="Logo" style="height: 40px; margin-right: 10px;"> Meu Prontuário
+                </a>
+                <a class="navbar-brand d-flex align-items-center" th:href="@{/pacientes/historico}"
+                   th:if="${usuarioLogado instanceof T(br.com.meuprontuario.model.UsuarioPaciente)}"
+                   style="color: #ffffff; font-weight: bold;">
+                    <img src="/images/logo.png" alt="Logo" style="height: 40px; margin-right: 10px;"> Meu Prontuário
+                </a>
+                <a class="navbar-brand d-flex align-items-center" th:href="@{/hospitais}"
+                   th:if="${usuarioLogado instanceof T(br.com.meuprontuario.model.UsuarioHospital)}"
+                   style="color: #ffffff; font-weight: bold;">
+                    <img src="/images/logo.png" alt="Logo" style="height: 40px; margin-right: 10px;"> Meu Prontuário
                 </a>
 
                 <!-- Botão de colapso para dispositivos menores -->
@@ -27,35 +38,48 @@
                 <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
                     <ul class="navbar-nav">
                         <!-- Menu para Paciente -->
-                        <li class="nav-item" th:if="${usuarioLogado instanceof T(br.com.meuprontuario.model.UsuarioPaciente)}">
-                            <a class="nav-link" href="/pacientes/historico" style="color: #ffffff; font-weight: 600;">Consultas</a>
+                        <li class="nav-item"
+                            th:if="${usuarioLogado instanceof T(br.com.meuprontuario.model.UsuarioPaciente)}">
+                            <a class="nav-link" href="/pacientes/historico"
+                                style="color: #ffffff; font-weight: 600;">Consultas</a>
                         </li>
-                        <li class="nav-item" th:if="${usuarioLogado instanceof T(br.com.meuprontuario.model.UsuarioPaciente)}">
-                            <a class="nav-link" th:href="@{/pacientes/formulario(id=${usuarioLogado.idPaciente})}" 
+                        <li class="nav-item"
+                            th:if="${usuarioLogado instanceof T(br.com.meuprontuario.model.UsuarioPaciente)}">
+                            <a class="nav-link" th:href="@{/pacientes/formulario(id=${usuarioLogado.idPaciente})}"
                                 style="color: #ffffff; font-weight: 600;">Perfil</a>
                         </li>
 
                         <!-- Menu para Hospital -->
-                        <li class="nav-item" th:if="${usuarioLogado instanceof T(br.com.meuprontuario.model.UsuarioHospital)}">
-                            <a class="nav-link" href="/pacientes" style="color: #ffffff; font-weight: 600;">Pacientes</a>
+                        <li class="nav-item"
+                            th:if="${usuarioLogado instanceof T(br.com.meuprontuario.model.UsuarioHospital)}">
+                            <a class="nav-link" href="/pacientes"
+                                style="color: #ffffff; font-weight: 600;">Pacientes</a>
                         </li>
-                        <li class="nav-item" th:if="${usuarioLogado instanceof T(br.com.meuprontuario.model.UsuarioHospital)}">
-                            <a class="nav-link" href="/especialidades" style="color: #ffffff; font-weight: 600;">Especialidades</a>
+                        <li class="nav-item"
+                            th:if="${usuarioLogado instanceof T(br.com.meuprontuario.model.UsuarioHospital)}">
+                            <a class="nav-link" href="/especialidades"
+                                style="color: #ffffff; font-weight: 600;">Especialidades</a>
                         </li>
-                        <li class="nav-item" th:if="${usuarioLogado instanceof T(br.com.meuprontuario.model.UsuarioHospital)}">
-                            <a class="nav-link" href="/hospitais" style="color: #ffffff; font-weight: 600;">Hospitais</a>
+                        <li class="nav-item"
+                            th:if="${usuarioLogado instanceof T(br.com.meuprontuario.model.UsuarioHospital)}">
+                            <a class="nav-link" href="/hospitais"
+                                style="color: #ffffff; font-weight: 600;">Hospitais</a>
                         </li>
-                        <li class="nav-item" th:if="${usuarioLogado instanceof T(br.com.meuprontuario.model.UsuarioHospital)}">
-                            <a class="nav-link" href="/historicos" style="color: #ffffff; font-weight: 600;">Histórico</a>
+                        <li class="nav-item"
+                            th:if="${usuarioLogado instanceof T(br.com.meuprontuario.model.UsuarioHospital)}">
+                            <a class="nav-link" href="/historicos"
+                                style="color: #ffffff; font-weight: 600;">Histórico</a>
                         </li>
-                        <li class="nav-item" th:if="${usuarioLogado instanceof T(br.com.meuprontuario.model.UsuarioHospital)}">
-                            <a class="nav-link" th:href="@{/hospitais/formulario(id=${usuarioLogado.idHospital})}" 
+                        <li class="nav-item"
+                            th:if="${usuarioLogado instanceof T(br.com.meuprontuario.model.UsuarioHospital)}">
+                            <a class="nav-link" th:href="@{/hospitais/formulario(id=${usuarioLogado.idHospital})}"
                                 style="color: #ffffff; font-weight: 600;">Perfil</a>
                         </li>
 
                         <!-- Logout -->
                         <li class="nav-item" th:if="${usuarioLogado != null}">
-                            <a class="nav-link" href="/login/logout" style="color: #ffffff; font-weight: 600;">Logout</a>
+                            <a class="nav-link" href="/login/logout"
+                                style="color: #ffffff; font-weight: 600;">Logout</a>
                         </li>
 
                         <!-- Menu para usuários não logados -->

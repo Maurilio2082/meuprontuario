@@ -1,6 +1,5 @@
 package br.com.meuprontuario.controller;
 
-
 import br.com.meuprontuario.dao.PacienteDAO;
 import br.com.meuprontuario.model.Endereco;
 import br.com.meuprontuario.model.Paciente;
@@ -32,7 +31,7 @@ public class PacienteController {
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", totalPages);
 
-        return "redirect:/pacientes/historico";
+        return "paciente-lista"; // Retorna a página correta para listar pacientes
     }
 
     @GetMapping("/formulario")
