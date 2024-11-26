@@ -5,13 +5,13 @@ import br.com.meuprontuario.service.EspecialidadeService;
 import br.com.meuprontuario.service.MedicoService;
 
 import org.springframework.beans.factory.annotation.Autowired;
-
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
+@Controller
 @RequestMapping("/especialidades")
 public class EspecialidadeController {
 
@@ -32,7 +32,7 @@ public class EspecialidadeController {
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", totalPages);
 
-        return "especialidade-lista";
+        return "especialidade-lista"; // Nome do template sem o prefixo/sufixo
     }
 
     @GetMapping("/formulario")
@@ -55,12 +55,12 @@ public class EspecialidadeController {
     }
 
     @GetMapping("/especialidadePorMedico")
-    public @ResponseBody Especialidade buscarEspecialidadePorMedico(@RequestParam("medicoId") int medicoId) {
+    @ResponseBody
+    public Especialidade buscarEspecialidadePorMedico(@RequestParam("medicoId") int medicoId) {
         Especialidade especialidade = medicoService.buscarEspecialidadePorMedico(medicoId);
         if (especialidade == null) {
             throw new RuntimeException("Nenhuma especialidade encontrada para o médico ID: " + medicoId);
         }
         return especialidade;
     }
-
 }
