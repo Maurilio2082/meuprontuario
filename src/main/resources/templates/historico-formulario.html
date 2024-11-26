@@ -79,16 +79,7 @@
                         </select>
                     </div>
 
-                    <!-- Seleção de Especialidade -->
-                    <div class="form-group mb-3">
-                        <label for="especialidade">Especialidade</label>
-                        <select id="especialidade" th:field="*{idEspecialidade.id}" class="form-select" required>
-                            <option value="0">Selecione uma Especialidade</option>
-                            <option th:each="especialidade : ${especialidades}" th:value="${especialidade.id}"
-                                th:text="${especialidade.nome}"></option>
-                        </select>
-                    </div>
-
+                 
                     <!-- Seleção de Médico -->
                     <div class="form-group mb-3">
                         <label for="medico">Médico</label>
@@ -107,6 +98,16 @@
                         </select>
                     </div>
 
+                       <!-- Seleção de Especialidade -->
+                       <div class="form-group mb-3">
+                        <label for="especialidade">Especialidade</label>
+                        <select id="especialidade" th:field="*{idEspecialidade.id}" class="form-select" required>
+                            <option value="0">Selecione uma Especialidade</option>
+                            <option th:each="especialidade : ${especialidades}" th:value="${especialidade.id}"
+                                th:text="${especialidade.nome}"></option>
+                        </select>
+                    </div>
+
                     <!-- Seleção de Tabela TISS -->
                     <div class="form-group mb-3">
                         <label for="codTiss">Tabela TISS</label>
@@ -117,8 +118,7 @@
 
                     <!-- Botões -->
                     <div style="display: flex; justify-content: space-between;">
-                        <button type="submit" id="salvar" class="btn btn-primary" style="width: 48%;"
-                            disabled>Salvar</button>
+                        <button type="submit" id="salvar" class="btn btn-primary" style="width: 48%;">Salvar</button>
                         <a th:href="@{/historicos}" class="btn btn-secondary" style="width: 48%;">Cancelar</a>
                     </div>
                 </form>
@@ -132,9 +132,126 @@
     <!-- JavaScript -->
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            $('#paciente, #hospital, #especialidade, #medico, #cid, #codTiss').select2({
+            // Configuração do Select2 para CID
+            $('#cid').select2({
+                placeholder: "Selecione um CID",
+                allowClear: true,
                 width: '100%',
-                placeholder: "Selecione uma opção"
+                ajax: {
+                    url: '/cids/listar',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return {
+                            page: params.page || 1,
+                            size: 10,
+                            q: params.term
+                        };
+                    },
+                    processResults: function (data, params) {
+                        params.page = params.page || 1;
+                        return {
+                            results: data.map(function (cid) {
+                                return {
+                                    id: cid.codCid,
+                                    text: `${cid.codCid} - ${cid.descricaoAbreviada}`
+                                };
+                            }),
+                            pagination: {
+                                more: data.length === 10
+                            }
+                        };
+                    }
+                }
+            });
+
+            // Configuração do Select2 para Tabela TISS
+            $('#codTiss').select2({
+                placeholder: "Selecione um Termo TISS",
+                allowClear: true,
+                width: '100%',
+                ajax: {
+                    url: '/tabelaTiss/listar',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return {
+                            page: params.page || 1,
+                            size: 10,
+                            q: params.term
+                        };
+                    },
+                    processResults: function (data, params) {
+                        params.page = params.page || 1;
+                        return {
+                            results: data.map(function (tiss) {
+                                return {
+                                    id: tiss.codigoTermo,
+                                    text: `${tiss.codigoTermo} - ${tiss.descricao}`
+                                };
+                            }),
+                            pagination: {
+                                more: data.length === 10
+                            }
+                        };
+                    }
+                }
+            });
+        });
+
+
+
+
+
+        $(document).ready(function () {
+            // Quando o hospital é selecionado, carregar os médicos
+            $('#hospital').on('change', function () {
+                const hospitalId = $(this).val();
+                if (hospitalId && hospitalId !== "0") {
+                    $.ajax({
+                        url: '/medicos/listarPorHospital',
+                        data: { hospitalId: hospitalId },
+                        success: function (medicos) {
+                            const medicoSelect = $('#medico');
+                            medicoSelect.empty().append('<option value="0">Selecione um Médico</option>');
+
+                            medicos.forEach(medico => {
+                                medicoSelect.append(`<option value="${medico.idMedico}">${medico.nomeMedico}</option>`);
+                            });
+
+                            medicoSelect.trigger('change'); // Notificar o Select2
+                        },
+                        error: function () {
+                            alert('Erro ao carregar médicos.');
+                        }
+                    });
+                } else {
+                    $('#medico').empty().append('<option value="0">Selecione um Médico</option>').trigger('change');
+                    $('#especialidade').val('').trigger('change');
+                }
+            });
+
+            // Quando o médico é selecionado, carregar a especialidade
+            $('#medico').on('change', function () {
+                const medicoId = $(this).val();''
+                if (medicoId && medicoId !== "0") {
+                    $.ajax({
+                        url: '/especialidades/especialidadePorMedico',
+                        data: { medicoId: medicoId },
+                        success: function (especialidade) {
+                            if (especialidade && especialidade.id) {
+                                $('#especialidade').val(especialidade.id).trigger('change');
+                            } else {
+                                alert('Especialidade não encontrada para o médico selecionado.');
+                            }
+                        },
+                        error: function () {
+                            alert('Erro ao carregar especialidade.');
+                        }
+                    });
+                } else {
+                    $('#especialidade').val('').trigger('change');
+                }
             });
         });
     </script>

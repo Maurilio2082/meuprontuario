@@ -24,4 +24,11 @@ public class TabelaTissService {
         return tabelaTissDAO.listarPorPagina(offset, pageSize);
     }
 
+
+    public List<TabelaTiss> listarPorTermo(String termo, int page, int pageSize) {
+        int offset = (page - 1) * pageSize;
+        return tabelaTissDAO.listarPorTermo(termo, offset, pageSize);
+    }
+    
+
 }

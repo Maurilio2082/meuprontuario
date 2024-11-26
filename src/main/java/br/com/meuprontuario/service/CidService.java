@@ -24,4 +24,10 @@ public class CidService {
         return cidDAO.listarPorPagina(offset, pageSize);
     }
 
+
+    public List<Cid> listarPorTermo(String termo, int page, int pageSize) {
+        int offset = (page - 1) * pageSize;
+        return cidDAO.listarPorTermo(termo, offset, pageSize);
+    }
+    
 }

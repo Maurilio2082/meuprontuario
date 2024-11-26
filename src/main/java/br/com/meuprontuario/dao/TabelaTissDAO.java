@@ -84,4 +84,32 @@ public class TabelaTissDAO {
         return tissList;
     }
 
+    public List<TabelaTiss> listarPorTermo(String termo, int offset, int limit) {
+        List<TabelaTiss> tissList = new ArrayList<>();
+        String sql = "SELECT * FROM tabelatiss WHERE descricao LIKE ? OR codigo_termo LIKE ? LIMIT ? OFFSET ?";
+
+        try (Connection conexao = ConfiguracaoBanco.obterConexao();
+                PreparedStatement stmt = conexao.prepareStatement(sql)) {
+
+            String filtro = "%" + termo + "%";
+            stmt.setString(1, filtro);
+            stmt.setString(2, filtro);
+            stmt.setInt(3, limit);
+            stmt.setInt(4, offset);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    TabelaTiss tiss = new TabelaTiss(
+                            rs.getLong("codigo_termo"),
+                            rs.getString("descricao"));
+                    tissList.add(tiss);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao listar Tabela TISS com filtro.", e);
+        }
+
+        return tissList;
+    }
+
 }

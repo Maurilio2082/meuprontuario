@@ -2,19 +2,24 @@ package br.com.meuprontuario.controller;
 
 import br.com.meuprontuario.model.Especialidade;
 import br.com.meuprontuario.service.EspecialidadeService;
+import br.com.meuprontuario.service.MedicoService;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping("/especialidades")
 public class EspecialidadeController {
 
     @Autowired
     private EspecialidadeService especialidadeService;
+
+    @Autowired
+    private MedicoService medicoService;
 
     @GetMapping
     public String listar(@RequestParam(value = "page", defaultValue = "1") int page, Model model) {
@@ -48,4 +53,14 @@ public class EspecialidadeController {
         especialidadeService.excluir(id);
         return "redirect:/especialidades";
     }
+
+    @GetMapping("/especialidadePorMedico")
+    public @ResponseBody Especialidade buscarEspecialidadePorMedico(@RequestParam("medicoId") int medicoId) {
+        Especialidade especialidade = medicoService.buscarEspecialidadePorMedico(medicoId);
+        if (especialidade == null) {
+            throw new RuntimeException("Nenhuma especialidade encontrada para o médico ID: " + medicoId);
+        }
+        return especialidade;
+    }
+
 }

@@ -15,8 +15,11 @@ public class TabelaTissController {
     private TabelaTissService tabelaTissService;
 
     @GetMapping("/listar")
-    public List<TabelaTiss> listarTiss(@RequestParam(value = "page", defaultValue = "1") int page,
+    public List<TabelaTiss> listarTiss(
+            @RequestParam(value = "q", required = false, defaultValue = "") String termo,
+            @RequestParam(value = "page", defaultValue = "1") int page,
             @RequestParam(value = "size", defaultValue = "10") int size) {
-        return tabelaTissService.listarPorPagina(page, size);
+        return tabelaTissService.listarPorTermo(termo, page, size);
     }
+
 }

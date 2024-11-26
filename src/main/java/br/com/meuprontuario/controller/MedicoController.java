@@ -68,4 +68,10 @@ public class MedicoController {
         medicoService.excluir(id);
         return "redirect:/medicos";
     }
+
+    @GetMapping("/listarPorHospital")
+    public @ResponseBody List<Medico> listarPorHospital(@RequestParam("hospitalId") int hospitalId) {
+        return medicoService.listarPorHospital(hospitalId);
+    }
+
 }

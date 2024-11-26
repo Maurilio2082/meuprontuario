@@ -1,6 +1,7 @@
 package br.com.meuprontuario.service;
 
 import br.com.meuprontuario.dao.MedicoDAO;
+import br.com.meuprontuario.model.Especialidade;
 import br.com.meuprontuario.model.Medico;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,11 +30,20 @@ public class MedicoService {
         medicoDAO.excluir(id);
     }
 
-     public List<Medico> listarPorPagina(int page, int pageSize) {
+    public List<Medico> listarPorPagina(int page, int pageSize) {
         return medicoDAO.listarPorPagina(page, pageSize);
     }
 
     public int contarMedicos() {
         return medicoDAO.contarMedicos();
     }
+
+    public List<Medico> listarPorHospital(int hospitalId) {
+        return medicoDAO.listarPorHospital(hospitalId);
+    }
+
+    public Especialidade buscarEspecialidadePorMedico(int medicoId) {
+        return medicoDAO.buscarEspecialidadePorMedico(medicoId);
+    }
+
 }

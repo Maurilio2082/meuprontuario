@@ -15,8 +15,11 @@ public class CidController {
     private CidService cidService;
 
     @GetMapping("/listar")
-    public List<Cid> listarCids(@RequestParam(value = "page", defaultValue = "1") int page,
-                                @RequestParam(value = "size", defaultValue = "10") int size) {
-        return cidService.listarPorPagina(page, size);
+    public List<Cid> listarCids(
+            @RequestParam(value = "q", required = false, defaultValue = "") String termo,
+            @RequestParam(value = "page", defaultValue = "1") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size) {
+        return cidService.listarPorTermo(termo, page, size);
     }
+
 }

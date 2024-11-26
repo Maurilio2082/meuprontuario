@@ -86,4 +86,33 @@ public class CidDAO {
         return cids;
     }
 
+    public List<Cid> listarPorTermo(String termo, int offset, int limit) {
+        List<Cid> cids = new ArrayList<>();
+        String sql = "SELECT * FROM cid WHERE descricao_abreviada LIKE ? OR cod_cid LIKE ? LIMIT ? OFFSET ?";
+
+        try (Connection conexao = ConfiguracaoBanco.obterConexao();
+                PreparedStatement stmt = conexao.prepareStatement(sql)) {
+
+            String filtro = "%" + termo + "%";
+            stmt.setString(1, filtro);
+            stmt.setString(2, filtro);
+            stmt.setInt(3, limit);
+            stmt.setInt(4, offset);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Cid cid = new Cid(
+                            rs.getString("cod_cid"),
+                            rs.getString("descricao"),
+                            rs.getString("descricao_abreviada"));
+                    cids.add(cid);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao listar CIDs com filtro.", e);
+        }
+
+        return cids;
+    }
+
 }
