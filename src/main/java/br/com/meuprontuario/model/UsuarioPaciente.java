@@ -17,7 +17,7 @@ public class UsuarioPaciente extends Usuario {
     }
 
     @Override
-    public String getRedirectPage() {
+    public String getRedirecionamento() {
         return "redirect:/pacientes/historico";
     }
 

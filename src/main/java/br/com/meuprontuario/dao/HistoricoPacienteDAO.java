@@ -22,7 +22,7 @@ public class HistoricoPacienteDAO {
             stmt.setInt(1, idPaciente);
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                    Historico historico = historicoDAO.criarHistoricoAPartirDoResultSet(rs);
+                    Historico historico = historicoDAO.criarHistorico(rs);
                     historicos.add(historico);
                 }
             }

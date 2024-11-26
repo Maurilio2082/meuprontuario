@@ -17,5 +17,5 @@ public abstract class Usuario {
         return senha;
     }
 
-    public abstract String getRedirectPage();
+    public abstract String getRedirecionamento();
 }

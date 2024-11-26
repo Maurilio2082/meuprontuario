@@ -29,7 +29,7 @@ public class HistoricoDAO {
             stmt.setInt(1, id);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    historico = criarHistoricoAPartirDoResultSet(rs);
+                    historico = criarHistorico(rs);
                 }
             }
         } catch (SQLException e) {
@@ -96,7 +96,7 @@ public class HistoricoDAO {
              ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
-                Historico historico = criarHistoricoAPartirDoResultSet(rs);
+                Historico historico = criarHistorico(rs);
                 historicos.add(historico);
             }
         } catch (SQLException e) {
@@ -106,7 +106,7 @@ public class HistoricoDAO {
         return historicos;
     }
 
-    protected  Historico criarHistoricoAPartirDoResultSet(ResultSet rs) throws SQLException {
+    protected  Historico criarHistorico(ResultSet rs) throws SQLException {
         // Buscando as entidades relacionadas
         Paciente paciente = pacienteDAO.buscarPorId(rs.getInt("id_paciente"));
         Hospital hospital = hospitalDAO.buscarPorId(rs.getInt("id_hospital"));
@@ -142,7 +142,7 @@ public class HistoricoDAO {
 
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                    Historico historico = criarHistoricoAPartirDoResultSet(rs);
+                    Historico historico = criarHistorico(rs);
                     historicos.add(historico);
                 }
             }
