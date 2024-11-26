@@ -11,13 +11,21 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
+/**
+ * DAO (Data Access Object) para gerenciar as operações relacionadas à entidade
+ * Medico.
+ */
 @Repository
-
 public class MedicoDAO {
 
-    private HospitalDAO hospitalDAO = new HospitalDAO();
-    private EspecialidadeDAO especialidadeDAO = new EspecialidadeDAO();
+    private final HospitalDAO hospitalDAO = new HospitalDAO(); // DAO auxiliar para manipular hospitais
+    private final EspecialidadeDAO especialidadeDAO = new EspecialidadeDAO(); // DAO auxiliar para especialidades
 
+    /**
+     * Salva ou atualiza um médico no banco de dados.
+     *
+     * @param medico Objeto Medico a ser salvo ou atualizado.
+     */
     public void salvar(Medico medico) {
         String sql = medico.getIdMedico() != 0
                 ? "UPDATE MEDICO SET NOME = ?, CONSELHO = ?, ID_HOSPITAL = ?, ID_ESPECIALIDADE = ?, CBO = ? WHERE ID_MEDICO = ?"
@@ -30,7 +38,7 @@ public class MedicoDAO {
             stmt.setString(2, medico.getConselho());
             stmt.setInt(3, medico.getHospital().getIdHospital());
             stmt.setInt(4, medico.getEspecialidade().getId());
-            stmt.setString(5, medico.getCbo()); // Certifique-se de que CBO está vindo corretamente do formulário
+            stmt.setString(5, medico.getCbo());
 
             if (medico.getIdMedico() != 0) {
                 stmt.setInt(6, medico.getIdMedico());
@@ -50,6 +58,12 @@ public class MedicoDAO {
         }
     }
 
+    /**
+     * Busca um médico pelo ID.
+     *
+     * @param id ID do médico a ser buscado.
+     * @return Objeto Medico correspondente ao ID ou null se não encontrado.
+     */
     public Medico buscarPorId(int id) {
         String sql = "SELECT * FROM MEDICO WHERE ID_MEDICO = ?";
 
@@ -78,6 +92,11 @@ public class MedicoDAO {
         return null;
     }
 
+    /**
+     * Lista todos os médicos cadastrados.
+     *
+     * @return Lista de objetos Medico.
+     */
     public List<Medico> listarTodos() {
         List<Medico> medicos = new ArrayList<>();
         String sql = "SELECT * FROM MEDICO";
@@ -104,6 +123,13 @@ public class MedicoDAO {
         return medicos;
     }
 
+    /**
+     * Lista médicos de forma paginada.
+     *
+     * @param page     Número da página.
+     * @param pageSize Tamanho da página.
+     * @return Lista de objetos Medico na página solicitada.
+     */
     public List<Medico> listarPorPagina(int page, int pageSize) {
         List<Medico> medicos = new ArrayList<>();
         String sql = "SELECT id_medico, nome, conselho, id_hospital, id_especialidade, CBO FROM medico LIMIT ? OFFSET ?";
@@ -136,8 +162,14 @@ public class MedicoDAO {
         return medicos;
     }
 
+    /**
+     * Conta o número total de médicos cadastrados.
+     *
+     * @return O número total de médicos.
+     */
     public int contarMedicos() {
         String sql = "SELECT COUNT(*) FROM medico";
+
         try (Connection conn = ConfiguracaoBanco.obterConexao();
                 PreparedStatement stmt = conn.prepareStatement(sql);
                 ResultSet rs = stmt.executeQuery()) {
@@ -146,11 +178,16 @@ public class MedicoDAO {
                 return rs.getInt(1);
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao contar medicos", e);
+            throw new RuntimeException("Erro ao contar médicos", e);
         }
         return 0;
     }
 
+    /**
+     * Exclui um médico pelo ID.
+     *
+     * @param id ID do médico a ser excluído.
+     */
     public void excluir(int id) {
         String sql = "DELETE FROM MEDICO WHERE ID_MEDICO = ?";
 
@@ -164,6 +201,12 @@ public class MedicoDAO {
         }
     }
 
+    /**
+     * Lista médicos associados a um hospital específico.
+     *
+     * @param hospitalId ID do hospital.
+     * @return Lista de objetos Medico associados ao hospital.
+     */
     public List<Medico> listarPorHospital(int hospitalId) {
         List<Medico> medicos = new ArrayList<>();
         String sql = "SELECT * FROM medico WHERE id_hospital = ?";
@@ -192,31 +235,34 @@ public class MedicoDAO {
         return medicos;
     }
 
+    /**
+     * Busca a especialidade de um médico pelo ID.
+     *
+     * @param medicoId ID do médico.
+     * @return Objeto Especialidade correspondente ou null se não encontrado.
+     */
     public Especialidade buscarEspecialidadePorMedico(int medicoId) {
         String sql = "SELECT e.ID_ESPECIALIDADE, e.NOME_ESPECIALIDADE " +
-                     "FROM especialidade e " +
-                     "JOIN medico m ON m.id_especialidade = e.ID_ESPECIALIDADE " +
-                     "WHERE m.id_medico = ?";
-    
+                "FROM especialidade e " +
+                "JOIN medico m ON m.id_especialidade = e.ID_ESPECIALIDADE " +
+                "WHERE m.id_medico = ?";
+
         try (Connection conexao = ConfiguracaoBanco.obterConexao();
-             PreparedStatement stmt = conexao.prepareStatement(sql)) {
-    
+                PreparedStatement stmt = conexao.prepareStatement(sql)) {
+
             stmt.setInt(1, medicoId);
-    
+
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     return new Especialidade(
-                            rs.getInt("ID_ESPECIALIDADE"), // Mapeia o ID da especialidade
-                            rs.getString("NOME_ESPECIALIDADE") // Mapeia o nome da especialidade
-                    );
+                            rs.getInt("ID_ESPECIALIDADE"),
+                            rs.getString("NOME_ESPECIALIDADE"));
                 }
             }
         } catch (SQLException e) {
             throw new RuntimeException("Erro ao buscar especialidade para o médico ID: " + medicoId, e);
         }
-    
-        return null; // Retorna null se não encontrar nenhuma especialidade para o médico
-    }
-    
 
+        return null;
+    }
 }

@@ -9,10 +9,20 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
+/**
+ * DAO (Data Access Object) responsável por gerenciar as operações relacionadas
+ * à entidade Especialidade no banco de dados.
+ */
 @Repository
-
 public class EspecialidadeDAO {
 
+    /**
+     * Busca uma especialidade pelo ID.
+     *
+     * @param id ID da especialidade a ser buscada.
+     * @return Objeto Especialidade correspondente ao ID fornecido ou null se não
+     *         encontrado.
+     */
     public Especialidade buscarPorId(int id) {
         String sql = "SELECT * FROM ESPECIALIDADE WHERE ID_ESPECIALIDADE = ?";
 
@@ -35,6 +45,11 @@ public class EspecialidadeDAO {
         return null;
     }
 
+    /**
+     * Lista todas as especialidades cadastradas.
+     *
+     * @return Lista de objetos Especialidade representando todos os registros.
+     */
     public List<Especialidade> listarTodas() {
         List<Especialidade> especialidades = new ArrayList<>();
         String sql = "SELECT * FROM ESPECIALIDADE";
@@ -55,6 +70,13 @@ public class EspecialidadeDAO {
         return especialidades;
     }
 
+    /**
+     * Lista as especialidades de forma paginada.
+     *
+     * @param page     Número da página.
+     * @param pageSize Quantidade de itens por página.
+     * @return Lista de objetos Especialidade correspondentes à página solicitada.
+     */
     public List<Especialidade> listarPorPagina(int page, int pageSize) {
         List<Especialidade> especialidades = new ArrayList<>();
         String sql = "SELECT id_especialidade, nome_especialidade FROM especialidade LIMIT ? OFFSET ?";
@@ -68,9 +90,9 @@ public class EspecialidadeDAO {
 
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                    Especialidade especialidade = new Especialidade();
-                    especialidade.setId(rs.getInt("id_especialidade"));
-                    especialidade.setNome(rs.getString("nome_especialidade"));
+                    Especialidade especialidade = new Especialidade(
+                            rs.getInt("id_especialidade"),
+                            rs.getString("nome_especialidade"));
                     especialidades.add(especialidade);
                 }
             }
@@ -80,8 +102,14 @@ public class EspecialidadeDAO {
         return especialidades;
     }
 
+    /**
+     * Conta o número total de especialidades cadastradas.
+     *
+     * @return O número total de especialidades.
+     */
     public int contarEspecialidades() {
         String sql = "SELECT COUNT(*) FROM especialidade";
+
         try (Connection conn = ConfiguracaoBanco.obterConexao();
                 PreparedStatement stmt = conn.prepareStatement(sql);
                 ResultSet rs = stmt.executeQuery()) {
@@ -95,6 +123,11 @@ public class EspecialidadeDAO {
         return 0;
     }
 
+    /**
+     * Salva ou atualiza uma especialidade no banco de dados.
+     *
+     * @param especialidade Objeto Especialidade a ser salvo ou atualizado.
+     */
     public void salvar(Especialidade especialidade) {
         String sql = especialidade.getId() != 0
                 ? "UPDATE ESPECIALIDADE SET NOME_ESPECIALIDADE = ? WHERE ID_ESPECIALIDADE = ?"
@@ -122,6 +155,11 @@ public class EspecialidadeDAO {
         }
     }
 
+    /**
+     * Exclui uma especialidade pelo ID.
+     *
+     * @param id ID da especialidade a ser excluída.
+     */
     public void excluir(int id) {
         String sql = "DELETE FROM ESPECIALIDADE WHERE ID_ESPECIALIDADE = ?";
 

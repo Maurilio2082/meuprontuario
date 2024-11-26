@@ -12,16 +12,24 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
+/**
+ * DAO (Data Access Object) para gerenciar operações relacionadas à entidade CID no banco de dados.
+ */
 @Repository
 public class CidDAO {
 
+    /**
+     * Lista todos os registros da tabela CID.
+     *
+     * @return Lista de objetos Cid representando todos os registros da tabela.
+     */
     public List<Cid> listarTodos() {
         List<Cid> cids = new ArrayList<>();
         String sql = "SELECT * FROM cid";
 
         try (Connection conexao = ConfiguracaoBanco.obterConexao();
-                PreparedStatement stmt = conexao.prepareStatement(sql);
-                ResultSet rs = stmt.executeQuery()) {
+             PreparedStatement stmt = conexao.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
                 Cid cid = new Cid(
@@ -37,12 +45,18 @@ public class CidDAO {
         return cids;
     }
 
+    /**
+     * Busca um registro da tabela CID pelo código.
+     *
+     * @param codCid Código do CID a ser buscado.
+     * @return Objeto Cid representando o registro encontrado ou null caso não exista.
+     */
     public Cid buscarPorCodigo(String codCid) {
         String sql = "SELECT * FROM cid WHERE cod_cid = ?";
         Cid cid = null;
 
         try (Connection conexao = ConfiguracaoBanco.obterConexao();
-                PreparedStatement stmt = conexao.prepareStatement(sql)) {
+             PreparedStatement stmt = conexao.prepareStatement(sql)) {
 
             stmt.setString(1, codCid);
             try (ResultSet rs = stmt.executeQuery()) {
@@ -60,12 +74,19 @@ public class CidDAO {
         return cid;
     }
 
+    /**
+     * Lista os registros da tabela CID de forma paginada.
+     *
+     * @param offset Quantidade de registros a pular (início da página).
+     * @param limit  Quantidade de registros por página.
+     * @return Lista de objetos Cid representando os registros da página.
+     */
     public List<Cid> listarPorPagina(int offset, int limit) {
         List<Cid> cids = new ArrayList<>();
         String sql = "SELECT * FROM cid LIMIT ? OFFSET ?";
 
         try (Connection conexao = ConfiguracaoBanco.obterConexao();
-                PreparedStatement stmt = conexao.prepareStatement(sql)) {
+             PreparedStatement stmt = conexao.prepareStatement(sql)) {
 
             stmt.setInt(1, limit);
             stmt.setInt(2, offset);
@@ -86,14 +107,22 @@ public class CidDAO {
         return cids;
     }
 
+    /**
+     * Lista os registros da tabela CID com base em um termo de busca e de forma paginada.
+     *
+     * @param termo  Termo de busca (filtro) a ser aplicado.
+     * @param offset Quantidade de registros a pular (início da página).
+     * @param limit  Quantidade de registros por página.
+     * @return Lista de objetos Cid representando os registros filtrados.
+     */
     public List<Cid> listarPorTermo(String termo, int offset, int limit) {
         List<Cid> cids = new ArrayList<>();
         String sql = "SELECT * FROM cid WHERE descricao_abreviada LIKE ? OR cod_cid LIKE ? LIMIT ? OFFSET ?";
 
         try (Connection conexao = ConfiguracaoBanco.obterConexao();
-                PreparedStatement stmt = conexao.prepareStatement(sql)) {
+             PreparedStatement stmt = conexao.prepareStatement(sql)) {
 
-            String filtro = "%" + termo + "%";
+            String filtro = "%" + termo + "%"; // Adiciona wildcards para busca parcial
             stmt.setString(1, filtro);
             stmt.setString(2, filtro);
             stmt.setInt(3, limit);
@@ -114,5 +143,4 @@ public class CidDAO {
 
         return cids;
     }
-
 }

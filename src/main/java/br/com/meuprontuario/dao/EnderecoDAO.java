@@ -8,9 +8,20 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * DAO (Data Access Object) para gerenciar operações relacionadas à entidade
+ * Endereco no banco de dados.
+ */
 @Repository
 public class EnderecoDAO {
 
+    /**
+     * Busca um endereço pelo ID.
+     *
+     * @param id ID do endereço a ser buscado.
+     * @return Objeto Endereco correspondente ao ID fornecido ou null se não
+     *         encontrado.
+     */
     public Endereco buscarPorId(int id) {
         String sql = "SELECT * FROM ENDERECO WHERE ID_ENDERECO = ?";
 
@@ -39,6 +50,11 @@ public class EnderecoDAO {
         return null;
     }
 
+    /**
+     * Salva ou atualiza um endereço no banco de dados.
+     *
+     * @param endereco Objeto Endereco a ser salvo.
+     */
     public void salvar(Endereco endereco) {
         String sql = endereco.getIdEndereco() != 0
                 ? "UPDATE ENDERECO SET LOGRADOURO = ?, NUMERO = ?, BAIRRO = ?, CIDADE = ?, ESTADO = ?, CEP = ?, CODIGO_MUNICIPIO = ? WHERE ID_ENDERECO = ?"
@@ -47,6 +63,7 @@ public class EnderecoDAO {
         try (Connection conexao = ConfiguracaoBanco.obterConexao();
                 PreparedStatement stmt = conexao.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
+            // Define os parâmetros da consulta
             stmt.setString(1, endereco.getLogradouro());
             stmt.setString(2, endereco.getNumero());
             stmt.setString(3, endereco.getBairro());
@@ -55,12 +72,15 @@ public class EnderecoDAO {
             stmt.setString(6, endereco.getCep());
             stmt.setInt(7, endereco.getCodigoMunicipio());
 
+            // Define o ID se for uma atualização
             if (endereco.getIdEndereco() != 0) {
                 stmt.setInt(8, endereco.getIdEndereco());
             }
 
+            // Executa a atualização ou inserção
             stmt.executeUpdate();
 
+            // Caso seja um novo endereço, recupera o ID gerado automaticamente
             if (endereco.getIdEndereco() == 0) {
                 try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
                     if (generatedKeys.next()) {
@@ -73,6 +93,11 @@ public class EnderecoDAO {
         }
     }
 
+    /**
+     * Exclui um endereço pelo ID.
+     *
+     * @param id ID do endereço a ser excluído.
+     */
     public void excluir(int id) {
         String sql = "DELETE FROM endereco WHERE id_endereco = ?";
 
@@ -87,9 +112,14 @@ public class EnderecoDAO {
         }
     }
 
+    /**
+     * Lista todos os endereços cadastrados.
+     *
+     * @return Lista de objetos Endereco representando todos os registros.
+     */
     public List<Endereco> listarTodos() {
         List<Endereco> enderecos = new ArrayList<>();
-        String sql = "SELECT id_endereco, logradouro, numero, bairro, cidade, estado, cep FROM endereco";
+        String sql = "SELECT id_endereco, logradouro, numero, bairro, cidade, estado, cep, CODIGO_MUNICIPIO FROM endereco";
 
         try (Connection conexao = ConfiguracaoBanco.obterConexao();
                 PreparedStatement stmt = conexao.prepareStatement(sql);
@@ -104,9 +134,7 @@ public class EnderecoDAO {
                         rs.getString("cidade"),
                         rs.getString("estado"),
                         rs.getString("cep"),
-                        rs.getInt("CODIGO_MUNICIPIO")
-
-                );
+                        rs.getInt("CODIGO_MUNICIPIO"));
                 enderecos.add(endereco);
             }
         } catch (SQLException e) {

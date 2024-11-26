@@ -10,12 +10,21 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
+/**
+ * DAO (Data Access Object) para gerenciar operações relacionadas à entidade
+ * Paciente.
+ */
 @Repository
-
 public class PacienteDAO {
 
-    private EnderecoDAO enderecoDAO = new EnderecoDAO();
+    private final EnderecoDAO enderecoDAO = new EnderecoDAO(); // DAO auxiliar para manipular endereços
 
+    /**
+     * Busca um paciente pelo ID.
+     *
+     * @param id ID do paciente.
+     * @return Objeto Paciente correspondente ao ID ou null se não encontrado.
+     */
     public Paciente buscarPorId(int id) {
         String sql = "SELECT * FROM PACIENTE WHERE ID_PACIENTE = ?";
 
@@ -26,7 +35,7 @@ public class PacienteDAO {
 
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    // Buscar o endereço do paciente
+                    // Busca o endereço associado ao paciente
                     Endereco endereco = enderecoDAO.buscarPorId(rs.getInt("ID_ENDERECO"));
 
                     return new Paciente(
@@ -46,6 +55,11 @@ public class PacienteDAO {
         return null;
     }
 
+    /**
+     * Salva ou atualiza um paciente no banco de dados.
+     *
+     * @param paciente Objeto Paciente a ser salvo ou atualizado.
+     */
     public void salvar(Paciente paciente) {
         String sqlPaciente = paciente.getIdPaciente() != 0
                 ? "UPDATE PACIENTE SET NOME = ?, EMAIL = ?, TELEFONE = ?, DATA_NASCIMENTO = ?, CPF = ?, ID_ENDERECO = ? WHERE ID_PACIENTE = ?"
@@ -76,7 +90,7 @@ public class PacienteDAO {
                     }
                 }
 
-                // Insere o usuário apenas se for um paciente novo
+                // Insere o usuário apenas se for um novo paciente
                 inserirUsuario(paciente.getCpf(), "123", "PACIENTE", paciente.getIdPaciente(), null);
             }
 
@@ -85,6 +99,15 @@ public class PacienteDAO {
         }
     }
 
+    /**
+     * Insere um registro na tabela USUARIO relacionado a um paciente.
+     *
+     * @param login      Login do usuário.
+     * @param senha      Senha do usuário.
+     * @param tipo       Tipo de usuário (ex.: PACIENTE).
+     * @param idPaciente ID do paciente associado.
+     * @param idHospital ID do hospital associado (pode ser null).
+     */
     private void inserirUsuario(String login, String senha, String tipo, Integer idPaciente, Integer idHospital) {
         String sqlUsuario = "INSERT INTO USUARIO (LOGIN, SENHA, TIPO, ID_PACIENTE, ID_HOSPITAL) VALUES (?, ?, ?, ?, ?)";
 
@@ -104,6 +127,11 @@ public class PacienteDAO {
         }
     }
 
+    /**
+     * Exclui um paciente pelo ID.
+     *
+     * @param id ID do paciente a ser excluído.
+     */
     public void excluir(int id) {
         String sql = "DELETE FROM PACIENTE WHERE ID_PACIENTE = ?";
 
@@ -118,17 +146,21 @@ public class PacienteDAO {
         }
     }
 
+    /**
+     * Lista todos os pacientes cadastrados.
+     *
+     * @return Lista de objetos Paciente representando todos os registros.
+     */
     public List<Paciente> listarTodos() {
         List<Paciente> pacientes = new ArrayList<>();
-
-        String sql = "SELECT * FROM paciente";
+        String sql = "SELECT * FROM PACIENTE";
 
         try (Connection conexao = ConfiguracaoBanco.obterConexao();
                 PreparedStatement stmt = conexao.prepareStatement(sql);
                 ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
-                Endereco endereco = enderecoDAO.buscarPorId(rs.getInt("id_endereco"));
+                Endereco endereco = enderecoDAO.buscarPorId(rs.getInt("ID_ENDERECO"));
                 Paciente paciente = new Paciente(
                         rs.getInt("ID_PACIENTE"),
                         rs.getString("NOME"),
@@ -146,6 +178,13 @@ public class PacienteDAO {
         return pacientes;
     }
 
+    /**
+     * Lista pacientes de forma paginada.
+     *
+     * @param page     Número da página.
+     * @param pageSize Tamanho da página.
+     * @return Lista de objetos Paciente na página solicitada.
+     */
     public List<Paciente> listarPorPagina(int page, int pageSize) {
         List<Paciente> pacientes = new ArrayList<>();
         String sql = "SELECT * FROM PACIENTE LIMIT ? OFFSET ?";
@@ -178,6 +217,11 @@ public class PacienteDAO {
         return pacientes;
     }
 
+    /**
+     * Conta o número total de pacientes cadastrados.
+     *
+     * @return Número total de pacientes.
+     */
     public int contarPacientes() {
         String sql = "SELECT COUNT(*) FROM PACIENTE";
 
@@ -194,5 +238,4 @@ public class PacienteDAO {
 
         return 0;
     }
-
 }

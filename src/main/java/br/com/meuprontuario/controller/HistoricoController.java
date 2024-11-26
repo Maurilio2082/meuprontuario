@@ -1,19 +1,7 @@
 package br.com.meuprontuario.controller;
 
-import br.com.meuprontuario.model.Cid;
-import br.com.meuprontuario.model.Especialidade;
-import br.com.meuprontuario.model.Historico;
-import br.com.meuprontuario.model.Hospital;
-import br.com.meuprontuario.model.Medico;
-import br.com.meuprontuario.model.Paciente;
-import br.com.meuprontuario.model.TabelaTiss;
-import br.com.meuprontuario.service.CidService;
-import br.com.meuprontuario.service.EspecialidadeService;
-import br.com.meuprontuario.service.HistoricoService;
-import br.com.meuprontuario.service.HospitalService;
-import br.com.meuprontuario.service.MedicoService;
-import br.com.meuprontuario.service.PacienteService;
-import br.com.meuprontuario.service.TabelaTissService;
+import br.com.meuprontuario.model.*;
+import br.com.meuprontuario.service.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -24,6 +12,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
+/**
+ * Controlador responsável pelas operações relacionadas ao histórico médico no
+ * sistema.
+ */
 @Controller
 @RequestMapping("/historicos")
 public class HistoricoController {
@@ -49,6 +41,14 @@ public class HistoricoController {
     @Autowired
     private CidService cidService;
 
+    /**
+     * Lista os históricos médicos com suporte a paginação.
+     *
+     * @param page  Número da página atual (default: 1).
+     * @param size  Quantidade de itens por página (default: 10).
+     * @param model Modelo para enviar dados à visão.
+     * @return Nome da página de listagem de históricos.
+     */
     @GetMapping
     public String listar(
             @RequestParam(value = "page", defaultValue = "1") int page,
@@ -66,11 +66,18 @@ public class HistoricoController {
         return "historico-lista";
     }
 
+    /**
+     * Exibe o formulário para criação ou edição de um histórico médico.
+     *
+     * @param id    ID do histórico a ser editado (opcional).
+     * @param model Modelo para enviar dados à visão.
+     * @return Nome da página do formulário.
+     */
     @GetMapping("/formulario")
     public String exibirFormulario(@RequestParam(value = "id", required = false) Integer id, Model model) {
         Historico historico = (id != null) ? historicoService.buscarPorId(id) : new Historico();
 
-        // Inicialização padrão
+        // Inicialização padrão para evitar valores nulos
         if (historico.getIdPaciente() == null) {
             historico.setIdPaciente(new Paciente(0, "", "", "", "", "", null));
         }
@@ -90,6 +97,7 @@ public class HistoricoController {
             historico.setTabelaTiss(new TabelaTiss(0, ""));
         }
 
+        // Adiciona dados necessários à visão
         model.addAttribute("historico", historico);
         model.addAttribute("pacientes", pacienteService.listarTodos());
         model.addAttribute("hospitais", hospitalService.listarTodos());
@@ -101,18 +109,37 @@ public class HistoricoController {
         return "historico-formulario";
     }
 
+    /**
+     * Salva ou atualiza um histórico médico no banco de dados.
+     *
+     * @param historico Objeto do histórico a ser salvo.
+     * @return Redirecionamento para a página de listagem de históricos.
+     */
     @PostMapping("/salvar")
     public String salvar(@ModelAttribute Historico historico) {
         historicoService.salvar(historico);
         return "redirect:/historicos";
     }
 
+    /**
+     * Exclui um histórico médico pelo ID.
+     *
+     * @param id ID do histórico a ser excluído.
+     * @return Redirecionamento para a página de listagem de históricos.
+     */
     @GetMapping("/excluir/{id}")
     public String excluir(@PathVariable int id) {
         historicoService.excluir(id);
         return "redirect:/historicos";
     }
 
+    /**
+     * Importa históricos médicos a partir de um arquivo XML.
+     *
+     * @param arquivo            Arquivo XML contendo os históricos.
+     * @param redirectAttributes Atributos para mensagens de redirecionamento.
+     * @return Redirecionamento para a página do formulário.
+     */
     @PostMapping("/importar")
     public String importarArquivoXML(@RequestParam("arquivo") MultipartFile arquivo,
             RedirectAttributes redirectAttributes) {
@@ -123,14 +150,13 @@ public class HistoricoController {
         }
 
         try {
+            // Processa o arquivo e importa os históricos
             List<Historico> historicosImportados = historicoService.importarHistoricosDeXML(arquivo);
 
             if (historicosImportados.isEmpty()) {
                 redirectAttributes.addFlashAttribute("erro", "O arquivo XML não contém registros válidos.");
             } else {
-                historicosImportados.forEach(historico -> {
-                    historicoService.salvar(historico);
-                });
+                historicosImportados.forEach(historicoService::salvar);
                 redirectAttributes.addFlashAttribute("mensagem",
                         "Importação realizada com sucesso! Registros importados: " + historicosImportados.size());
             }
@@ -141,5 +167,4 @@ public class HistoricoController {
 
         return "redirect:/historicos/formulario";
     }
-
 }

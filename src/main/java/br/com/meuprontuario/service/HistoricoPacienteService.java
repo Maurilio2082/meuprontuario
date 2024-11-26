@@ -14,7 +14,14 @@ public class HistoricoPacienteService {
     @Autowired
     private HistoricoPacienteDAO historicoPacienteDAO;
 
+    /**
+     * Lista os históricos médicos associados a um paciente.
+     *
+     * @param idPaciente ID do paciente.
+     * @return Lista de objetos Historico.
+     */
     public List<Historico> listarPorPaciente(int idPaciente) {
         return historicoPacienteDAO.listarPorPaciente(idPaciente);
     }
 }
+

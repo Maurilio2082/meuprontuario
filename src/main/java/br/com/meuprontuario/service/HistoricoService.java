@@ -42,30 +42,69 @@ public class HistoricoService {
     @Autowired
     private TabelaTissDAO tabelaTissDAO;
 
+    /**
+     * Busca um histórico pelo ID.
+     *
+     * @param id ID do histórico.
+     * @return Objeto Historico correspondente ou null se não encontrado.
+     */
     public Historico buscarPorId(int id) {
         return historicoDAO.buscarPorId(id);
     }
 
+    /**
+     * Salva ou atualiza um histórico.
+     *
+     * @param historico Objeto Historico a ser salvo.
+     */
     public void salvar(Historico historico) {
         historicoDAO.salvar(historico);
     }
 
+    /**
+     * Exclui um histórico pelo ID.
+     *
+     * @param id ID do histórico.
+     */
     public void excluir(int id) {
         historicoDAO.excluir(id);
     }
 
+    /**
+     * Lista todos os históricos cadastrados.
+     *
+     * @return Lista de objetos Historico.
+     */
     public List<Historico> listarTodos() {
         return historicoDAO.listarTodos();
     }
 
+    /**
+     * Lista históricos de forma paginada.
+     *
+     * @param page     Número da página.
+     * @param pageSize Tamanho da página.
+     * @return Lista de objetos Historico na página solicitada.
+     */
     public List<Historico> listarPorPagina(int page, int pageSize) {
         return historicoDAO.listarPorPagina(page, pageSize);
     }
 
+    /**
+     * Conta o número total de históricos cadastrados.
+     *
+     * @return Número total de históricos.
+     */
     public int contarHistoricos() {
         return historicoDAO.contarHistoricos();
     }
 
+    /**
+     * Importa históricos de um arquivo XML.
+     *
+     * @param arquivo Arquivo XML contendo os históricos.
+     * @return Lista de objetos Historico importados.
+     */
     public List<Historico> importarHistoricosDeXML(MultipartFile arquivo) {
         List<Historico> historicos = new ArrayList<>();
         try (InputStream inputStream = arquivo.getInputStream()) {
@@ -115,5 +154,4 @@ public class HistoricoService {
         }
         return historicos;
     }
-
 }

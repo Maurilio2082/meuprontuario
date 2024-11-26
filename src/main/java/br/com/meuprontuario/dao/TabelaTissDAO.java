@@ -12,10 +12,18 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
+/**
+ * DAO (Data Access Object) responsável por operações relacionadas à Tabela
+ * TISS.
+ */
 @Repository
-
 public class TabelaTissDAO {
 
+    /**
+     * Lista todos os registros da Tabela TISS.
+     *
+     * @return Lista de objetos TabelaTiss representando todos os registros.
+     */
     public List<TabelaTiss> listarTodos() {
         List<TabelaTiss> tissList = new ArrayList<>();
         String sql = "SELECT * FROM tabelatiss";
@@ -25,6 +33,7 @@ public class TabelaTissDAO {
                 ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
+                // Mapeia cada registro do ResultSet para um objeto TabelaTiss
                 TabelaTiss tiss = new TabelaTiss(
                         rs.getLong("codigo_termo"),
                         rs.getString("descricao"));
@@ -37,6 +46,12 @@ public class TabelaTissDAO {
         return tissList;
     }
 
+    /**
+     * Busca um registro da Tabela TISS pelo código do termo.
+     *
+     * @param codigoTermo Código do termo da Tabela TISS.
+     * @return Objeto TabelaTiss correspondente ou null se não encontrado.
+     */
     public TabelaTiss buscarPorCodigo(long codigoTermo) {
         String sql = "SELECT * FROM tabelatiss WHERE codigo_termo = ?";
         TabelaTiss tiss = null;
@@ -45,8 +60,10 @@ public class TabelaTissDAO {
                 PreparedStatement stmt = conexao.prepareStatement(sql)) {
 
             stmt.setLong(1, codigoTermo);
+
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
+                    // Mapeia o registro encontrado para um objeto TabelaTiss
                     tiss = new TabelaTiss(
                             rs.getLong("codigo_termo"),
                             rs.getString("descricao"));
@@ -59,6 +76,13 @@ public class TabelaTissDAO {
         return tiss;
     }
 
+    /**
+     * Lista os registros da Tabela TISS de forma paginada.
+     *
+     * @param offset Posição inicial do primeiro registro.
+     * @param limit  Quantidade de registros a serem retornados.
+     * @return Lista de objetos TabelaTiss na página solicitada.
+     */
     public List<TabelaTiss> listarPorPagina(int offset, int limit) {
         List<TabelaTiss> tissList = new ArrayList<>();
         String sql = "SELECT * FROM tabelatiss LIMIT ? OFFSET ?";
@@ -71,6 +95,7 @@ public class TabelaTissDAO {
 
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
+                    // Mapeia cada registro do ResultSet para um objeto TabelaTiss
                     TabelaTiss tiss = new TabelaTiss(
                             rs.getLong("codigo_termo"),
                             rs.getString("descricao"));
@@ -84,6 +109,14 @@ public class TabelaTissDAO {
         return tissList;
     }
 
+    /**
+     * Lista os registros da Tabela TISS filtrados por um termo e de forma paginada.
+     *
+     * @param termo  Termo para filtrar os registros (descricao ou codigo_termo).
+     * @param offset Posição inicial do primeiro registro.
+     * @param limit  Quantidade de registros a serem retornados.
+     * @return Lista de objetos TabelaTiss que atendem ao filtro.
+     */
     public List<TabelaTiss> listarPorTermo(String termo, int offset, int limit) {
         List<TabelaTiss> tissList = new ArrayList<>();
         String sql = "SELECT * FROM tabelatiss WHERE descricao LIKE ? OR codigo_termo LIKE ? LIMIT ? OFFSET ?";
@@ -99,6 +132,7 @@ public class TabelaTissDAO {
 
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
+                    // Mapeia cada registro do ResultSet para um objeto TabelaTiss
                     TabelaTiss tiss = new TabelaTiss(
                             rs.getLong("codigo_termo"),
                             rs.getString("descricao"));
@@ -111,5 +145,4 @@ public class TabelaTissDAO {
 
         return tissList;
     }
-
 }
