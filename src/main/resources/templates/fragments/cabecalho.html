@@ -65,6 +65,10 @@
                                 style="color: #ffffff; font-weight: 600;">Especialidades</a>
                         </li>
                         <li class="nav-item" th:if="${usuarioLogado instanceof T(br.com.meuprontuario.model.UsuarioHospital)}">
+                            <a class="nav-link" href="/medicos"
+                                style="color: #ffffff; font-weight: 600;">Medicos</a>
+                        </li>
+                        <li class="nav-item" th:if="${usuarioLogado instanceof T(br.com.meuprontuario.model.UsuarioHospital)}">
                             <a class="nav-link" href="/hospitais"
                                 style="color: #ffffff; font-weight: 600;">Hospitais</a>
                         </li>

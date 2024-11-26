@@ -75,10 +75,10 @@ public class PacienteDAO {
                         paciente.setIdPaciente(generatedKeys.getInt(1));
                     }
                 }
-            }
 
-            // Adiciona o usuário na tabela usuario
-            inserirUsuario(paciente.getCpf(), "123", "PACIENTE", paciente.getIdPaciente(), null);
+                // Insere o usuário apenas se for um paciente novo
+                inserirUsuario(paciente.getCpf(), "123", "PACIENTE", paciente.getIdPaciente(), null);
+            }
 
         } catch (SQLException e) {
             throw new RuntimeException("Erro ao salvar o paciente", e);

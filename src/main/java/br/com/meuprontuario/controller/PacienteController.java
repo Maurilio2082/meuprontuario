@@ -4,6 +4,8 @@ import br.com.meuprontuario.dao.PacienteDAO;
 import br.com.meuprontuario.model.Endereco;
 import br.com.meuprontuario.model.Paciente;
 import br.com.meuprontuario.service.PacienteService;
+import jakarta.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -50,8 +52,30 @@ public class PacienteController {
     }
 
     @PostMapping("/salvar")
-    public String salvar(@ModelAttribute Paciente paciente) {
+    public String salvar(@ModelAttribute Paciente paciente, HttpSession session) {
         pacienteService.salvar(paciente);
+
+        Object usuarioLogado = session.getAttribute("usuarioLogado");
+
+        // Verifica se o usuário logado é um paciente
+        if (usuarioLogado instanceof br.com.meuprontuario.model.UsuarioPaciente) {
+            return "redirect:/pacientes/historico"; // Redireciona o paciente logado para o histórico
+        }
+
+        // Para outros tipos de usuários (ex.: hospital)
+        return "redirect:/pacientes";
+    }
+
+    @GetMapping("/formulario/cancelar")
+    public String cancelar(HttpSession session) {
+        Object usuarioLogado = session.getAttribute("usuarioLogado");
+
+        // Verifica se o usuário logado é um paciente
+        if (usuarioLogado instanceof br.com.meuprontuario.model.UsuarioPaciente) {
+            return "redirect:/pacientes/historico"; // Redireciona o paciente logado para o histórico
+        }
+
+        // Para outros tipos de usuários (ex.: hospital)
         return "redirect:/pacientes";
     }
 

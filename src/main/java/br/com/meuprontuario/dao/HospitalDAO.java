@@ -73,10 +73,10 @@ public class HospitalDAO {
                         hospital.setIdHospital(generatedKeys.getInt(1));
                     }
                 }
-            }
 
-            // Adiciona o usuário na tabela usuario
-            inserirUsuario(hospital.getCnpj(), "123", "HOSPITAL", null, hospital.getIdHospital());
+                // Insira o usuário apenas se o hospital for novo
+                inserirUsuario(hospital.getCnpj(), "123", "HOSPITAL", null, hospital.getIdHospital());
+            }
 
         } catch (SQLException e) {
             throw new RuntimeException("Erro ao salvar hospital", e);
