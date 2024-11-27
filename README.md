@@ -2,7 +2,7 @@
 
 **MeuProntuário** é um sistema completo de gerenciamento de pacientes, hospitais, médicos e históricos médicos. Ele foi desenvolvido para atender às demandas das disciplinas **Projeto Integrador II** e **Linguagem de Programação Orientada a Objetos** do curso de **Sistemas de Informação** na **Faculdade FAESA**.
 
-O projeto utiliza as melhores práticas do **Spring Boot** para criar uma aplicação robusta, segura e fácil de usar, com persistência no banco de dados **MySQL**.
+O projeto utiliza práticas do **Spring Boot** para criar uma aplicação fácil de usar, com persistência no banco de dados **MySQL**.
 
 
 ## 📋 Funcionalidades
