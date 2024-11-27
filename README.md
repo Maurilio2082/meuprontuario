@@ -59,21 +59,21 @@ Certifique-se de ter as seguintes ferramentas instaladas no seu ambiente:
 - Crie o banco de dados junto com suas tabelas no MySQL execultando o arquivo:
 [MeuProntuario.sql](src/main/resources/static/sql/MeuProntuario.sql)
 
-- Na classe DatabaseConfig, dentro do módulo conexão, deve-se adicionar o nome da database e um usuário e senha com permissão para usar a base:
+- Na classe ConfiguracaoBanco, dentro do pacote config, deve-se adicionar o nome da database e um usuário e senha com permissão para usar a base:
 
 ```java
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class DatabaseConfig {
+public class ConfiguracaoBanco {
 
     private static final String URL = "jdbc:mysql://localhost:3306/meuprontuario";
-    private static final String USER = "usuario";
-    private static final String PASSWORD = "senha";
+    private static final String USUARIO = "usuario";
+    private static final String SENHA = "senha";
 
-    public static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(URL, USER, PASSWORD);
+    public static Connection obterConexao() throws SQLException {
+        return DriverManager.getConnection(URL, USUARIO, SENHA);
     }
 }
 ```
